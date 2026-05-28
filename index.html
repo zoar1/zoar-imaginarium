@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoar Imaginarium — Creative Studio</title>
+  <meta name="description" content="Zoar Imaginarium is a world-class creative studio for founders and businesses who demand the extraordinary." />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/neue-montreal" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    img{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    button{border:none;background:none;cursor:pointer;font:inherit}
+
+    :root {
+      --bg:       #111111;
+      --bg-card:  #1a1a1a;
+      --bg-lift:  #202020;
+      --white:    #ffffff;
+      --muted:    rgba(255,255,255,.52);
+      --subtle:   rgba(255,255,255,.32);
+      --faint:    rgba(255,255,255,.10);
+      --hairline: rgba(255,255,255,.08);
+      --accent:   #DF7659;
+      --blue:     #4B3EF0;
+      --blue-hi:  #7B6FFF;
+      --font:     'Neue Montreal','Inter',system-ui,sans-serif;
+      --r-sm:     8px;
+      --r-md:     12px;
+      --r-lg:     20px;
+    }
+
+    html{scroll-behavior:smooth}
+    body{
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+      line-height:1.5;
+    }
+
+    /* ── NAV ─────────────────────────────────── */
+    .nav{
+      position:fixed;top:0;left:0;right:0;
+      z-index:100;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:26px 48px;
+      pointer-events:none;
+    }
+    .nav>*{pointer-events:auto}
+    .nav__year,.nav__menu{
+      font-size:11px;font-weight:400;
+      letter-spacing:.1em;text-transform:uppercase;
+      color:var(--muted);
+    }
+    .nav__menu{cursor:pointer;transition:color .2s}
+    .nav__menu:hover{color:var(--white)}
+
+    /* ── OVERLAY ─────────────────────────────── */
+    .overlay{
+      position:fixed;inset:0;z-index:99;
+      background:var(--bg);
+      display:flex;flex-direction:column;
+      padding:96px 64px 64px;
+      transform:translateY(-100%);
+      transition:transform .55s cubic-bezier(.77,0,.18,1);
+    }
+    .overlay.open{transform:translateY(0)}
+    .overlay__links{flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px}
+    .overlay__link{
+      font-size:clamp(48px,7vw,96px);
+      font-weight:300;line-height:1.08;
+      letter-spacing:-.035em;
+      opacity:.85;transition:color .2s,opacity .2s;
+    }
+    .overlay__link:hover{color:var(--accent);opacity:1}
+    .overlay__foot{
+      display:flex;justify-content:space-between;align-items:flex-end;
+    }
+    .overlay__brand{font-size:12px;color:var(--subtle);line-height:1.6}
+    .overlay__soc{display:flex;gap:24px}
+    .overlay__soc a{
+      font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+      color:var(--subtle);transition:color .2s;
+    }
+    .overlay__soc a:hover{color:var(--white)}
+
+    /* ── HERO ────────────────────────────────── */
+    .hero{
+      min-height:100vh;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      text-align:center;
+      padding:120px 48px 80px;
+      gap:40px;
+    }
+    .hero__cross{
+      width:34px;height:34px;
+      border:1px solid var(--faint);border-radius:var(--r-sm);
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+    }
+    .hero__cross svg{stroke:var(--muted)}
+    .hero__headline{
+      font-size:clamp(38px,6.8vw,86px);
+      font-weight:300;line-height:1.08;
+      letter-spacing:-.035em;
+      max-width:960px;
+    }
+    .hero__images{
+      display:flex;gap:8px;
+      width:100%;max-width:1080px;
+    }
+    .hero__img{
+      flex:1;aspect-ratio:3/4;
+      border-radius:var(--r-lg);overflow:hidden;
+      background:var(--bg-card);position:relative;
+    }
+    .hero__img img{
+      width:100%;height:100%;object-fit:cover;
+      transition:transform .7s cubic-bezier(.25,.46,.45,.94);
+    }
+    .hero__img:hover img{transform:scale(1.06)}
+    .hover-label{
+      position:absolute;bottom:12px;right:12px;
+      font-size:10px;letter-spacing:.05em;
+      background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
+      border-radius:4px;padding:4px 8px;
+      color:var(--white);pointer-events:none;
+    }
+    .hero__cta{
+      display:inline-block;
+      padding:14px 40px;
+      border:1px solid rgba(255,255,255,.28);
+      font-size:11px;font-weight:500;
+      letter-spacing:.12em;text-transform:uppercase;
+      border-radius:var(--r-sm);
+      transition:all .25s ease;
+    }
+    .hero__cta:hover{background:var(--white);color:var(--bg);border-color:var(--white)}
+
+    /* ── LOGOS ───────────────────────────────── */
+    .logos{border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);overflow:hidden}
+    .logos__runner{display:flex;width:max-content;animation:ticker 30s linear infinite}
+    .logos__runner:hover{animation-play-state:paused}
+    @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .logos__set{display:flex;align-items:center;padding:20px 0}
+    .logos__item{
+      padding:0 36px;display:flex;align-items:center;gap:10px;
+      font-size:12px;font-weight:500;letter-spacing:.04em;
+      color:var(--subtle);white-space:nowrap;transition:color .2s;
+    }
+    .logos__item:hover{color:var(--white)}
+    .logos__dot{width:4px;height:4px;border-radius:50%;background:var(--faint)}
+
+    /* ── EDITORIAL ───────────────────────────── */
+    .editorial{max-width:1400px;margin:0 auto;padding:120px 64px 72px}
+    .eyebrow{
+      display:flex;align-items:center;gap:10px;
+      font-size:11px;font-weight:500;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--subtle);
+      margin-bottom:48px;
+    }
+    .eyebrow::before{
+      content:'';width:6px;height:6px;border-radius:50%;
+      background:var(--accent);flex-shrink:0;
+    }
+    .editorial__body{
+      font-size:clamp(24px,3.2vw,50px);
+      font-weight:300;line-height:1.24;
+      letter-spacing:-.022em;max-width:920px;
+    }
+    .hi{color:var(--accent)}
+
+    /* ── WORKS GRID ──────────────────────────── */
+    .works{max-width:1400px;margin:0 auto;padding:56px 64px 120px}
+    .works__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+    .wcard{background:var(--bg-card);overflow:hidden;cursor:pointer;transition:background .25s}
+    .wcard:hover{background:var(--bg-lift)}
+    .wcard__top{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px 18px;border-bottom:1px solid var(--hairline);
+    }
+    .wcard__label{
+      font-size:10px;font-weight:600;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--muted);
+    }
+    .wcard__btn{
+      width:26px;height:26px;border:1px solid var(--faint);
+      border-radius:5px;display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
+    }
+    .wcard:hover .wcard__btn{background:var(--white);border-color:var(--white)}
+    .wcard:hover .wcard__btn svg{stroke:var(--bg)}
+    .wcard__img{width:100%;aspect-ratio:16/10;overflow:hidden}
+    .wcard__img img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.25,.46,.45,.94)}
+    .wcard:hover .wcard__img img{transform:scale(1.05)}
+    .wcard__bot{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px 18px;
+    }
+    .wcard__title{font-size:13px;font-weight:500}
+    .wcard__year{font-size:11px;color:var(--subtle)}
+
+    /* ── BENTO ───────────────────────────────── */
+    .features{max-width:1400px;margin:0 auto;padding:0 64px 120px}
+    .features__hl{
+      font-size:clamp(24px,3.2vw,50px);
+      font-weight:300;line-height:1.24;
+      letter-spacing:-.022em;max-width:860px;
+      margin-bottom:60px;
+    }
+    .bento{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .bc{
+      border-radius:var(--r-lg);overflow:hidden;
+      padding:36px;min-height:400px;
+      display:flex;flex-direction:column;position:relative;
+    }
+    .bc--dark{background:var(--bg-card);border:1px solid var(--hairline)}
+    .bc--blue{background:linear-gradient(140deg,#2318CC 0%,#5B4BFA 50%,#8B7FFF 100%)}
+    .bc__chip{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:10px;font-weight:600;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--subtle);
+      border:1px solid var(--faint);border-radius:4px;padding:5px 10px;
+      align-self:flex-start;
+    }
+    .bc--blue .bc__chip{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.5)}
+    .bc__hl{
+      font-size:clamp(26px,2.4vw,40px);
+      font-weight:300;line-height:1.12;
+      letter-spacing:-.025em;margin-top:auto;
+    }
+    .bc__dim{color:var(--muted)}
+    .bc__badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .bc__badge{
+      display:flex;align-items:center;gap:7px;
+      font-size:12px;color:var(--muted);
+      background:var(--faint);border-radius:var(--r-sm);padding:6px 12px;
+    }
+    .bc__desc{font-size:13px;color:var(--subtle);line-height:1.65;margin-top:14px}
+    /* mockup inside blue card */
+    .mockup{
+      position:absolute;bottom:28px;left:32px;width:52%;
+      background:rgba(255,255,255,.95);border-radius:var(--r-md);
+      padding:14px;box-shadow:0 24px 64px rgba(0,0,0,.4);z-index:2;
+    }
+    .mockup__hd{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+    .mockup__dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+    .mockup__brand{font-size:10px;font-weight:700;color:#111;letter-spacing:.03em}
+    .mockup__img{width:100%;aspect-ratio:16/9;border-radius:var(--r-sm);overflow:hidden;background:#111}
+    .mockup__img img{width:100%;height:100%;object-fit:cover}
+    .mockup__cap h4{font-size:11px;font-weight:700;color:#111;margin-top:9px}
+    .mockup__cap p{font-size:9px;color:#666;line-height:1.4;margin-top:2px}
+    .bc--blue .side-img{
+      position:absolute;right:0;top:0;bottom:0;width:40%;overflow:hidden;
+      border-radius:0 var(--r-lg) var(--r-lg) 0;
+    }
+    .bc--blue .side-img img{width:100%;height:100%;object-fit:cover;opacity:.3}
+
+    /* ── ABOUT ───────────────────────────────── */
+    .about{
+      max-width:1400px;margin:0 auto;
+      padding:120px 64px;
+      border-top:1px solid var(--hairline);
+    }
+    .about__grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+    .about__hl{
+      font-size:clamp(30px,4.2vw,62px);
+      font-weight:300;line-height:1.06;
+      letter-spacing:-.035em;margin:16px 0 24px;
+    }
+    .about__body{font-size:16px;line-height:1.75;color:var(--muted);margin-bottom:36px}
+    .about__link{
+      display:inline-flex;align-items:center;gap:10px;
+      font-size:13px;font-weight:500;letter-spacing:.04em;
+      transition:gap .2s;
+    }
+    .about__link:hover{gap:16px}
+    .about__img{
+      aspect-ratio:5/4;border-radius:var(--r-lg);
+      overflow:hidden;background:var(--bg-card);
+    }
+    .about__img img{width:100%;height:100%;object-fit:cover}
+
+    /* ── CTA STRIP ───────────────────────────── */
+    .cta-strip{
+      max-width:1400px;margin:0 auto;
+      padding:80px 64px;
+      border-top:1px solid var(--hairline);
+    }
+    .cta-strip__text{
+      font-size:clamp(20px,2.8vw,44px);
+      font-weight:300;line-height:1.3;
+      letter-spacing:-.02em;color:var(--muted);max-width:740px;
+    }
+    .cta-strip__text a{color:var(--white);transition:color .2s}
+    .cta-strip__text a:hover{color:var(--accent)}
+
+    /* ── FOOTER ──────────────────────────────── */
+    .footer{
+      max-width:1400px;margin:0 auto;
+      padding:64px 64px 48px;
+      border-top:1px solid var(--hairline);
+    }
+    .footer__main{display:grid;grid-template-columns:1fr 1fr;gap:80px;padding-bottom:60px}
+    .footer__brand{font-size:14px;font-weight:500;letter-spacing:.03em}
+    .footer__tagline{font-size:12px;color:var(--subtle);margin-top:6px}
+    .footer__nav{display:flex;gap:28px;margin-top:32px}
+    .footer__nav a{font-size:12px;color:var(--subtle);letter-spacing:.04em;transition:color .2s}
+    .footer__nav a:hover{color:var(--white)}
+    .footer__offices{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+    .footer__office-tag{
+      font-size:10px;font-weight:600;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--subtle);margin-bottom:10px;
+    }
+    .footer__office-text{font-size:13px;line-height:1.65;color:var(--muted)}
+    .footer__bottom{
+      display:flex;justify-content:space-between;align-items:center;
+      padding-top:28px;border-top:1px solid var(--hairline);
+    }
+    .footer__copy{font-size:11px;color:var(--subtle);letter-spacing:.03em}
+    .footer__soc{display:flex;gap:22px}
+    .footer__soc a{
+      font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+      color:var(--subtle);transition:color .2s;
+    }
+    .footer__soc a:hover{color:var(--white)}
+
+    /* ── SCROLL ANIMATION ────────────────────── */
+    .fu{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+    .fu.in{opacity:1;transform:translateY(0)}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media(max-width:1024px){
+      .works__grid{grid-template-columns:repeat(2,1fr)}
+      .about__grid{grid-template-columns:1fr;gap:48px}
+    }
+    @media(max-width:768px){
+      .nav{padding:20px 24px}
+      .hero{padding:100px 24px 64px;gap:28px}
+      .hero__images{gap:5px}
+      .hero__img{border-radius:12px}
+      .editorial,.works,.features,.about,.cta-strip,.footer{padding-left:24px;padding-right:24px}
+      .bento,.works__grid{grid-template-columns:1fr}
+      .footer__main{grid-template-columns:1fr;gap:40px}
+      .footer__offices{grid-template-columns:1fr;gap:28px}
+      .overlay{padding:96px 28px 48px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav__year">©2026</span>
+  <button class="nav__menu" id="menuBtn" aria-expanded="false" aria-label="Toggle menu">MENU</button>
+</nav>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+  <nav class="overlay__links">
+    <a class="overlay__link" href="#work">Work</a>
+    <a class="overlay__link" href="#services">Services</a>
+    <a class="overlay__link" href="#about">About</a>
+    <a class="overlay__link" href="#contact">Contact</a>
+  </nav>
+  <div class="overlay__foot">
+    <p class="overlay__brand">Zoar Imaginarium — Est. 2020<br>Lagos, Nigeria — Global</p>
+    <div class="overlay__soc">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__cross" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <line x1="7" y1="1" x2="7" y2="13" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="1" y1="7" x2="13" y2="7" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <h1 class="hero__headline">We build brands that<br>move worlds</h1>
+
+  <div class="hero__images">
+    <div class="hero__img">
+      <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=520&fit=crop&crop=faces" alt="Creative direction" />
+    </div>
+    <div class="hero__img">
+      <img src="https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=400&h=520&fit=crop" alt="Brand work" />
+    </div>
+    <div class="hero__img">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=520&fit=crop" alt="Digital art" />
+    </div>
+    <div class="hero__img">
+      <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&h=520&fit=crop" alt="Design workspace" />
+    </div>
+    <div class="hero__img">
+      <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=520&fit=crop" alt="Motion and visual" />
+      <span class="hover-label">Hover me ↗</span>
+    </div>
+  </div>
+
+  <a href="#contact" class="hero__cta">GET STARTED</a>
+</section>
+
+<!-- LOGOS -->
+<div class="logos">
+  <div class="logos__runner">
+    <div class="logos__set">
+      <span class="logos__item"><span class="logos__dot"></span>Koko</span>
+      <span class="logos__item">Reeva</span>
+      <span class="logos__item"><span class="logos__dot"></span>Axon</span>
+      <span class="logos__item">Lumina</span>
+      <span class="logos__item"><span class="logos__dot"></span>Meridian</span>
+      <span class="logos__item">Vella</span>
+      <span class="logos__item"><span class="logos__dot"></span>Orbis</span>
+      <span class="logos__item">Pulse</span>
+      <span class="logos__item"><span class="logos__dot"></span>Nexus</span>
+      <span class="logos__item">Auralis</span>
+      <span class="logos__item"><span class="logos__dot"></span>Komo</span>
+    </div>
+    <div class="logos__set" aria-hidden="true">
+      <span class="logos__item"><span class="logos__dot"></span>Koko</span>
+      <span class="logos__item">Reeva</span>
+      <span class="logos__item"><span class="logos__dot"></span>Axon</span>
+      <span class="logos__item">Lumina</span>
+      <span class="logos__item"><span class="logos__dot"></span>Meridian</span>
+      <span class="logos__item">Vella</span>
+      <span class="logos__item"><span class="logos__dot"></span>Orbis</span>
+      <span class="logos__item">Pulse</span>
+      <span class="logos__item"><span class="logos__dot"></span>Nexus</span>
+      <span class="logos__item">Auralis</span>
+      <span class="logos__item"><span class="logos__dot"></span>Komo</span>
+    </div>
+  </div>
+</div>
+
+<!-- EDITORIAL -->
+<section class="editorial">
+  <div class="eyebrow">ZOAR IMAGINARIUM&nbsp;•&nbsp;CREATIVE STUDIO</div>
+  <p class="editorial__body fu">
+    Every brand that enters the Imaginarium leaves transformed. Built for
+    <span class="hi">storytelling and impact</span>, ensuring your identity
+    feels modern, purposeful, and elevated with creative precision.
+  </p>
+</section>
+
+<!-- WORKS -->
+<section id="work" class="works">
+  <div class="works__grid">
+
+    <a href="#" class="wcard fu">
+      <div class="wcard__top">
+        <span class="wcard__label">BRAND&nbsp;—&nbsp;LUMINA</span>
+        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="wcard__img">
+        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=700&h=440&fit=crop" alt="Lumina Luxury Skincare Rebrand" loading="lazy"/>
+      </div>
+      <div class="wcard__bot">
+        <span class="wcard__title">Luxury Skincare Rebrand</span>
+        <span class="wcard__year">2024</span>
+      </div>
+    </a>
+
+    <a href="#" class="wcard fu d1">
+      <div class="wcard__top">
+        <span class="wcard__label">UX/UI&nbsp;—&nbsp;VELLA</span>
+        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="wcard__img">
+        <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=700&h=440&fit=crop" alt="Vella SaaS Dashboard" loading="lazy"/>
+      </div>
+      <div class="wcard__bot">
+        <span class="wcard__title">SaaS Dashboard Design</span>
+        <span class="wcard__year">2024</span>
+      </div>
+    </a>
+
+    <a href="#" class="wcard fu d2">
+      <div class="wcard__top">
+        <span class="wcard__label">DEV&nbsp;—&nbsp;AXON</span>
+        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="wcard__img">
+        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=700&h=440&fit=crop" alt="Axon Full-Stack Build" loading="lazy"/>
+      </div>
+      <div class="wcard__bot">
+        <span class="wcard__title">Full-Stack Product Build</span>
+        <span class="wcard__year">2023</span>
+      </div>
+    </a>
+
+    <a href="#" class="wcard fu">
+      <div class="wcard__top">
+        <span class="wcard__label">BRAND&nbsp;—&nbsp;KOKO</span>
+        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="wcard__img">
+        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=440&fit=crop" alt="Koko Retail Identity" loading="lazy"/>
+      </div>
+      <div class="wcard__bot">
+        <span class="wcard__title">Retail Identity System</span>
+        <span class="wcard__year">2024</span>
+      </div>
+    </a>
+
+    <a href="#" class="wcard fu d1">
+      <div class="wcard__top">
+        <span class="wcard__label">MOTION&nbsp;—&nbsp;REEVA</span>
+        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="wcard__img">
+        <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=700&h=440&fit=crop" alt="Reeva Campaign & Motion" loading="lazy"/>
+      </div>
+      <div class="wcard__bot">
+        <span class="wcard__title">Campaign &amp; Motion Direction</span>
+        <span class="wcard__year">2024</span>
+      </div>
+    </a>
+
+    <a href="#" class="wcard fu d2">
+      <div class="wcard__top">
+        <span class="wcard__label">STRATEGY&nbsp;—&nbsp;MERIDIAN</span>
+        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="wcard__img">
+        <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=700&h=440&fit=crop" alt="Meridian Global Strategy" loading="lazy"/>
+      </div>
+      <div class="wcard__bot">
+        <span class="wcard__title">Global Brand Strategy</span>
+        <span class="wcard__year">2023</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- FEATURES / BENTO -->
+<section id="services" class="features">
+  <div class="eyebrow fu">WHY SETTLE WHEN YOU CAN DOMINATE?</div>
+  <h2 class="features__hl fu">Design that moves fast<br>and builds brands that last.</h2>
+
+  <div class="bento">
+
+    <!-- Dark card -->
+    <div class="bc bc--dark fu">
+      <div class="bc__chip">JUST BUILD</div>
+      <div style="margin-top:auto">
+        <h3 class="bc__hl">Design first.<br><span class="bc__dim">Execute faster.</span></h3>
+        <div class="bc__badges">
+          <div class="bc__badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Brand Identity
+          </div>
+          <div class="bc__badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            Web Design
+          </div>
+          <div class="bc__badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Development
+          </div>
+        </div>
+        <p class="bc__desc">
+          Tell us about your project. We respond within 24 hours with a clear path forward — no endless calls, just focused creative execution that ships.
+        </p>
+      </div>
+    </div>
+
+    <!-- Blue card -->
+    <div class="bc bc--blue fu d1" style="padding:0;min-height:420px">
+      <div style="padding:36px 36px 0;position:relative;z-index:1">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="bc__chip">CREATIVE STUDIO</div>
+          <div style="width:28px;height:28px;border:1px solid rgba(255,255,255,.2);border-radius:5px;display:flex;align-items:center;justify-content:center">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <h3 class="bc__hl" style="margin-top:88px">Slick, intentional,<br>sellable.</h3>
+      </div>
+
+      <!-- Floating mockup -->
+      <div class="mockup">
+        <div class="mockup__hd">
+          <div class="mockup__dot"></div>
+          <span class="mockup__brand">Zoar Studio</span>
+        </div>
+        <div class="mockup__img">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=225&fit=crop" alt="Project preview" loading="lazy"/>
+        </div>
+        <div class="mockup__cap">
+          <h4>Unleash</h4>
+          <p>Highlighting texture and light with purposeful design that converts, retains, and grows your audience effortlessly.</p>
+        </div>
+      </div>
+
+      <!-- Atmospheric side image -->
+      <div class="side-img">
+        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=600&fit=crop" alt="" aria-hidden="true" loading="lazy"/>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about">
+  <div class="about__grid">
+    <div>
+      <div class="eyebrow fu">ABOUT THE STUDIO</div>
+      <h2 class="about__hl fu">Not an agency.<br>An imaginarium.</h2>
+      <p class="about__body fu">
+        Zoar Imaginarium is an aquarium for imaginations — a creative ecosystem where ideas breathe, evolve, and become something the world has never seen. We don't cage creativity. We cultivate it.
+      </p>
+      <a href="#contact" class="about__link fu">
+        Our Story
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="about__img fu d1">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&h=560&fit=crop" alt="Studio at work" loading="lazy"/>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<section id="contact" class="cta-strip">
+  <p class="cta-strip__text fu">
+    We're open for collaborations, new ideas, and creative partnerships.
+    <a href="mailto:hello@zoarimmaginarium.com">Let's work together&nbsp;→</a>
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__main">
+    <div>
+      <span class="footer__brand">Zoar Imaginarium</span>
+      <p class="footer__tagline">Creative Studio — Est. 2020</p>
+      <nav class="footer__nav">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+    <div class="footer__offices">
+      <div>
+        <p class="footer__office-tag">HQ</p>
+        <p class="footer__office-text">Zoar Creative Hub<br>Victoria Island<br>Lagos, Nigeria</p>
+      </div>
+      <div>
+        <p class="footer__office-tag">Global</p>
+        <p class="footer__office-text">Remote-first studio<br>Serving clients worldwide<br>hello@zoarimmaginarium.com</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">© 2026 Zoar Imaginarium. All rights reserved.</p>
+    <div class="footer__soc">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Twitter</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Menu toggle ──────────────────────────────────
+  const btn = document.getElementById('menuBtn');
+  const ov  = document.getElementById('overlay');
+  let open = false;
+
+  btn.addEventListener('click', () => {
+    open = !open;
+    ov.classList.toggle('open', open);
+    btn.textContent = open ? 'CLOSE' : 'MENU';
+    btn.setAttribute('aria-expanded', open);
+  });
+
+  ov.querySelectorAll('.overlay__link').forEach(l => {
+    l.addEventListener('click', () => {
+      open = false;
+      ov.classList.remove('open');
+      btn.textContent = 'MENU';
+      btn.setAttribute('aria-expanded', false);
+    });
+  });
+
+  // ── Scroll fade-up ───────────────────────────────
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fu').forEach(el => io.observe(el));
+
+  // ── Stagger work cards ───────────────────────────
+  document.querySelectorAll('.wcard').forEach((c, i) => {
+    c.style.transitionDelay = (i % 3) * 0.1 + 's';
+  });
+</script>
+</body>
+</html>

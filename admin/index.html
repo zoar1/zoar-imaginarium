@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ZI Admin — Project Manager</title>
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/neue-montreal"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    img{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    button{border:none;background:none;cursor:pointer;font:inherit}
+    textarea,input,select{font:inherit}
+
+    :root{
+      --bg:         #0e0e0e;
+      --sidebar:    #0a0a0a;
+      --card:       #161616;
+      --card-hi:    #1e1e1e;
+      --border:     rgba(255,255,255,.07);
+      --border-hi:  rgba(255,255,255,.13);
+      --white:      #ffffff;
+      --muted:      rgba(255,255,255,.45);
+      --subtle:     rgba(255,255,255,.25);
+      --accent:     #4B3EF0;
+      --accent-hi:  #7B6FFF;
+      --coral:      #DF7659;
+      --green:      #22c55e;
+      --red:        #ef4444;
+      --yellow:     #f59e0b;
+      --font:       'Neue Montreal','Inter',system-ui,sans-serif;
+      --r:          10px;
+      --r-sm:       6px;
+      --r-lg:       14px;
+      --sidebar-w:  240px;
+      --topbar-h:   60px;
+    }
+
+    html,body{height:100%;overflow:hidden}
+    body{
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      display:flex;flex-direction:column;
+    }
+
+    /* ── TOPBAR ─────────────────────────────────────── */
+    .topbar{
+      height:var(--topbar-h);
+      background:var(--sidebar);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;
+      padding:0 24px;gap:16px;flex-shrink:0;
+      position:relative;z-index:50;
+    }
+    .topbar__brand{
+      display:flex;align-items:center;gap:10px;
+      width:var(--sidebar-w);margin-left:-8px;
+    }
+    .topbar__mark{
+      width:32px;height:32px;background:var(--accent);
+      border-radius:8px;display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:700;letter-spacing:.03em;flex-shrink:0;
+    }
+    .topbar__name{font-size:13px;font-weight:600}
+    .topbar__sub{font-size:10px;color:var(--muted);margin-top:1px}
+    .topbar__divider{width:1px;height:24px;background:var(--border)}
+    .topbar__breadcrumb{
+      display:flex;align-items:center;gap:8px;
+      font-size:13px;color:var(--muted);
+    }
+    .topbar__breadcrumb span{color:var(--white);font-weight:500}
+    .topbar__right{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .topbar__avatar{
+      width:30px;height:30px;border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),var(--coral));
+      display:flex;align-items:center;justify-content:center;
+      font-size:11px;font-weight:700;cursor:pointer;
+    }
+    .topbar__live{
+      display:flex;align-items:center;gap:6px;
+      font-size:11px;color:var(--muted);
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r-sm);padding:5px 10px;
+    }
+    .live-dot{
+      width:6px;height:6px;border-radius:50%;background:var(--green);
+      animation:pulse 2s ease infinite;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.4)}
+      50%{opacity:.8;box-shadow:0 0 0 4px rgba(34,197,94,0)}
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .shell{display:flex;flex:1;overflow:hidden}
+
+    /* ── SIDEBAR ────────────────────────────────────── */
+    .sidebar{
+      width:var(--sidebar-w);flex-shrink:0;
+      background:var(--sidebar);
+      border-right:1px solid var(--border);
+      display:flex;flex-direction:column;
+      overflow-y:auto;padding:16px 12px;
+    }
+    .sidebar::-webkit-scrollbar{width:4px}
+    .sidebar::-webkit-scrollbar-track{background:transparent}
+    .sidebar::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
+
+    .nav-section{margin-bottom:24px}
+    .nav-label{
+      font-size:10px;font-weight:600;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--subtle);
+      padding:0 8px;margin-bottom:6px;
+    }
+    .nav-item{
+      display:flex;align-items:center;gap:10px;
+      padding:8px 10px;border-radius:var(--r-sm);
+      font-size:13px;color:var(--muted);
+      cursor:pointer;transition:all .15s;
+      user-select:none;
+    }
+    .nav-item:hover{background:var(--card);color:var(--white)}
+    .nav-item.active{
+      background:rgba(75,62,240,.15);
+      color:var(--white);
+      border-left:2px solid var(--accent);
+      padding-left:8px;
+    }
+    .nav-item svg{flex-shrink:0;opacity:.7}
+    .nav-item.active svg{opacity:1}
+    .nav-badge{
+      margin-left:auto;
+      background:var(--accent);
+      color:#fff;font-size:9px;font-weight:700;
+      border-radius:10px;padding:1px 6px;min-width:18px;text-align:center;
+    }
+    .sidebar__footer{
+      margin-top:auto;padding-top:16px;
+      border-top:1px solid var(--border);
+    }
+    .sidebar__user{
+      display:flex;align-items:center;gap:10px;padding:8px 10px;
+      border-radius:var(--r-sm);cursor:pointer;
+    }
+    .sidebar__user:hover{background:var(--card)}
+    .sidebar__uavatar{
+      width:28px;height:28px;border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),var(--coral));
+      display:flex;align-items:center;justify-content:center;
+      font-size:10px;font-weight:700;flex-shrink:0;
+    }
+    .sidebar__uname{font-size:12px;font-weight:500}
+    .sidebar__urole{font-size:10px;color:var(--muted)}
+
+    /* ── MAIN ───────────────────────────────────────── */
+    .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+    .main::-webkit-scrollbar{width:6px}
+    .main::-webkit-scrollbar-track{background:transparent}
+    .main::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
+
+    .page{padding:28px 32px;display:none;flex-direction:column;gap:28px;flex:1}
+    .page.active{display:flex}
+
+    /* ── PAGE HEADER ────────────────────────────────── */
+    .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .page-head__title{font-size:22px;font-weight:600;letter-spacing:-.025em}
+    .page-head__sub{font-size:13px;color:var(--muted);margin-top:3px}
+    .page-head__actions{display:flex;gap:10px;align-items:center;flex-shrink:0}
+
+    /* ── BUTTONS ────────────────────────────────────── */
+    .btn{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 18px;border-radius:var(--r-sm);
+      font-size:13px;font-weight:500;cursor:pointer;
+      transition:all .15s;white-space:nowrap;
+    }
+    .btn--primary{background:var(--accent);color:#fff}
+    .btn--primary:hover{background:var(--accent-hi)}
+    .btn--ghost{
+      background:var(--card);color:var(--muted);
+      border:1px solid var(--border);
+    }
+    .btn--ghost:hover{color:var(--white);border-color:var(--border-hi)}
+    .btn--danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+    .btn--danger:hover{background:rgba(239,68,68,.25)}
+    .btn--sm{padding:5px 12px;font-size:11px}
+    .btn--icon{padding:7px;border-radius:var(--r-sm)}
+
+    /* ── STAT CARDS ─────────────────────────────────── */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .stat-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r-lg);padding:18px 20px;
+      display:flex;flex-direction:column;gap:10px;
+    }
+    .stat-card__top{display:flex;justify-content:space-between;align-items:center}
+    .stat-card__label{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+    .stat-card__icon{
+      width:32px;height:32px;border-radius:var(--r-sm);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .stat-card__value{font-size:28px;font-weight:600;letter-spacing:-.03em}
+    .stat-card__meta{font-size:11px;color:var(--muted)}
+    .stat-card__meta b{color:var(--green)}
+
+    /* ── PROJECTS GRID ──────────────────────────────── */
+    .projects-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:14px;
+    }
+    .pcard{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r-lg);overflow:hidden;
+      transition:border-color .2s,transform .2s;
+      cursor:pointer;position:relative;
+    }
+    .pcard:hover{border-color:var(--border-hi);transform:translateY(-1px)}
+    .pcard__thumb{
+      width:100%;aspect-ratio:16/9;overflow:hidden;
+      background:var(--card-hi);position:relative;
+    }
+    .pcard__thumb img{
+      width:100%;height:100%;object-fit:cover;
+      transition:transform .4s ease;
+    }
+    .pcard:hover .pcard__thumb img{transform:scale(1.04)}
+    .pcard__thumb-empty{
+      width:100%;height:100%;
+      display:flex;align-items:center;justify-content:center;
+      flex-direction:column;gap:8px;
+      color:var(--subtle);
+    }
+    .pcard__body{padding:14px 16px}
+    .pcard__tag{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:9px;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;background:rgba(75,62,240,.15);
+      color:var(--accent-hi);border-radius:4px;padding:3px 8px;margin-bottom:8px;
+    }
+    .pcard__title{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+    .pcard__meta{font-size:11px;color:var(--muted)}
+    .pcard__actions{
+      display:flex;gap:6px;padding:10px 16px;
+      border-top:1px solid var(--border);
+    }
+
+    /* ── EMPTY STATE ────────────────────────────────── */
+    .empty{
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;gap:14px;
+      padding:80px 24px;text-align:center;
+      border:1px dashed var(--border-hi);border-radius:var(--r-lg);
+    }
+    .empty__icon{
+      width:56px;height:56px;background:var(--card);
+      border-radius:14px;display:flex;align-items:center;justify-content:center;
+    }
+    .empty__title{font-size:15px;font-weight:600}
+    .empty__sub{font-size:13px;color:var(--muted);max-width:320px;line-height:1.6}
+
+    /* ── EDITOR PANEL ───────────────────────────────── */
+    .panel-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.6);
+      z-index:200;opacity:0;pointer-events:none;
+      transition:opacity .3s;
+    }
+    .panel-overlay.open{opacity:1;pointer-events:auto}
+
+    .editor{
+      position:fixed;top:0;right:0;bottom:0;
+      width:520px;max-width:100%;
+      background:var(--sidebar);
+      border-left:1px solid var(--border);
+      z-index:201;
+      transform:translateX(100%);
+      transition:transform .35s cubic-bezier(.4,0,.2,1);
+      display:flex;flex-direction:column;
+    }
+    .editor.open{transform:translateX(0)}
+
+    .editor__head{
+      padding:20px 24px;
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:12px;flex-shrink:0;
+    }
+    .editor__title{font-size:15px;font-weight:600;flex:1}
+    .editor__body{
+      flex:1;overflow-y:auto;padding:24px;
+      display:flex;flex-direction:column;gap:20px;
+    }
+    .editor__body::-webkit-scrollbar{width:4px}
+    .editor__body::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
+    .editor__foot{
+      padding:16px 24px;
+      border-top:1px solid var(--border);
+      display:flex;gap:10px;flex-shrink:0;
+    }
+
+    /* ── FORM ───────────────────────────────────────── */
+    .form-group{display:flex;flex-direction:column;gap:7px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-label{
+      font-size:11px;font-weight:600;letter-spacing:.07em;
+      text-transform:uppercase;color:var(--muted);
+    }
+    .form-label span{color:var(--coral);margin-left:2px}
+    .form-input,.form-select,.form-textarea{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--r-sm);
+      color:var(--white);
+      font-size:13px;padding:9px 12px;
+      transition:border-color .15s;
+      width:100%;
+      outline:none;
+    }
+    .form-input:focus,.form-select:focus,.form-textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(75,62,240,.15);
+    }
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--subtle)}
+    .form-select option{background:var(--card)}
+    .form-textarea{resize:vertical;min-height:90px;line-height:1.6}
+    .form-hint{font-size:11px;color:var(--subtle);line-height:1.5}
+
+    /* Image URL preview */
+    .img-preview{
+      width:100%;aspect-ratio:16/9;border-radius:var(--r-sm);
+      background:var(--card);border:1px solid var(--border);
+      overflow:hidden;display:flex;align-items:center;justify-content:center;
+      margin-top:6px;
+    }
+    .img-preview img{width:100%;height:100%;object-fit:cover}
+    .img-preview-empty{color:var(--subtle);font-size:12px;text-align:center;padding:16px}
+
+    /* Process steps */
+    .process-steps{display:flex;flex-direction:column;gap:8px}
+    .process-step{
+      display:flex;gap:8px;align-items:flex-start;
+    }
+    .step-num{
+      width:22px;height:22px;border-radius:50%;
+      background:rgba(75,62,240,.2);border:1px solid var(--accent);
+      display:flex;align-items:center;justify-content:center;
+      font-size:10px;font-weight:700;color:var(--accent-hi);
+      flex-shrink:0;margin-top:9px;
+    }
+    .remove-step{
+      width:28px;height:28px;border-radius:var(--r-sm);
+      background:transparent;color:var(--subtle);
+      display:flex;align-items:center;justify-content:center;
+      transition:all .15s;margin-top:7px;flex-shrink:0;
+    }
+    .remove-step:hover{background:rgba(239,68,68,.15);color:var(--red)}
+
+    /* Gallery */
+    .gallery-list{display:flex;flex-direction:column;gap:6px}
+    .gallery-item{
+      display:flex;gap:8px;align-items:center;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r-sm);padding:6px 10px;
+    }
+    .gallery-thumb{
+      width:40px;height:28px;border-radius:4px;
+      object-fit:cover;background:var(--card-hi);flex-shrink:0;
+    }
+    .gallery-url{font-size:11px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .gallery-remove{color:var(--subtle);transition:color .15s}
+    .gallery-remove:hover{color:var(--red)}
+
+    /* ── CATEGORY FILTER ────────────────────────────── */
+    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .filter-btn{
+      padding:5px 14px;border-radius:var(--r-sm);
+      font-size:11px;font-weight:500;letter-spacing:.03em;
+      background:var(--card);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;transition:all .15s;
+    }
+    .filter-btn:hover{color:var(--white);border-color:var(--border-hi)}
+    .filter-btn.active{
+      background:rgba(75,62,240,.15);
+      border-color:rgba(75,62,240,.4);
+      color:var(--accent-hi);
+    }
+
+    /* ── TOAST ──────────────────────────────────────── */
+    .toast{
+      position:fixed;bottom:28px;right:28px;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:12px 18px;
+      display:flex;align-items:center;gap:10px;
+      font-size:13px;z-index:500;
+      transform:translateY(20px);opacity:0;
+      transition:all .25s cubic-bezier(.4,0,.2,1);
+      pointer-events:none;
+      box-shadow:0 8px 32px rgba(0,0,0,.5);
+    }
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast__dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+    /* ── CONFIRM DIALOG ─────────────────────────────── */
+    .confirm-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.7);
+      z-index:300;display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;transition:opacity .2s;
+    }
+    .confirm-overlay.open{opacity:1;pointer-events:auto}
+    .confirm-box{
+      background:var(--sidebar);border:1px solid var(--border);
+      border-radius:var(--r-lg);padding:24px;
+      width:360px;max-width:90%;
+      transform:scale(.95);transition:transform .2s;
+    }
+    .confirm-overlay.open .confirm-box{transform:scale(1)}
+    .confirm-box h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .confirm-box p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px}
+    .confirm-actions{display:flex;gap:10px;justify-content:flex-end}
+
+    /* ── SETTINGS PAGE ──────────────────────────────── */
+    .settings-section{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r-lg);overflow:hidden;
+    }
+    .settings-row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 20px;border-bottom:1px solid var(--border);gap:24px;
+    }
+    .settings-row:last-child{border-bottom:none}
+    .settings-row__label{font-size:13px;font-weight:500}
+    .settings-row__desc{font-size:11px;color:var(--muted);margin-top:2px}
+    .settings-row__right{flex-shrink:0}
+    .tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+    .tag{
+      display:inline-flex;align-items:center;gap:5px;
+      background:rgba(75,62,240,.12);border:1px solid rgba(75,62,240,.25);
+      color:var(--accent-hi);font-size:11px;font-weight:500;
+      border-radius:4px;padding:3px 10px;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────── */
+    @media(max-width:1024px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){
+      .sidebar{width:200px}
+      :root{--sidebar-w:200px}
+      .editor{width:100%;max-width:100%}
+      .stats-row{grid-template-columns:1fr 1fr}
+      .projects-grid{grid-template-columns:1fr}
+      .page{padding:20px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOPBAR ─────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="topbar__brand">
+    <div class="topbar__mark">ZI</div>
+    <div>
+      <div class="topbar__name">Zoar Imaginarium</div>
+      <div class="topbar__sub">Admin Dashboard</div>
+    </div>
+  </div>
+  <div class="topbar__divider"></div>
+  <div class="topbar__breadcrumb" id="breadcrumb">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Overview / <span id="bc-label">Dashboard</span>
+  </div>
+  <div class="topbar__right">
+    <div class="topbar__live">
+      <div class="live-dot"></div>
+      Live Preview
+    </div>
+    <a href="../index.html" target="_blank" class="btn btn--ghost btn--sm">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View Site
+    </a>
+    <div class="topbar__avatar">JO</div>
+  </div>
+</div>
+
+<!-- ── SHELL ──────────────────────────────────────────── -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" data-page="dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Content</div>
+      <div class="nav-item" data-page="projects">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Projects
+        <span class="nav-badge" id="nav-badge">0</span>
+      </div>
+      <div class="nav-item" data-page="categories">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Categories
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">System</div>
+      <div class="nav-item" data-page="settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </div>
+    </div>
+    <div class="sidebar__footer">
+      <div class="sidebar__user">
+        <div class="sidebar__uavatar">JO</div>
+        <div>
+          <div class="sidebar__uname">Joseph Adukwu</div>
+          <div class="sidebar__urole">Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── DASHBOARD PAGE ────────────────────────── -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-head">
+        <div>
+          <div class="page-head__title">Welcome back, Joseph 👋</div>
+          <div class="page-head__sub">Here's what's happening with Zoar Imaginarium today.</div>
+        </div>
+        <div class="page-head__actions">
+          <button class="btn btn--primary" onclick="openEditor()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Project
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-row" id="stats-row">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- Recent projects preview -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h3 style="font-size:14px;font-weight:600">Recent Projects</h3>
+          <button class="btn btn--ghost btn--sm" onclick="navigate('projects')">View all →</button>
+        </div>
+        <div class="projects-grid" id="recent-grid" style="grid-template-columns:repeat(3,1fr)">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJECTS PAGE ─────────────────────────── -->
+    <div class="page" id="page-projects">
+      <div class="page-head">
+        <div>
+          <div class="page-head__title">Projects</div>
+          <div class="page-head__sub" id="proj-count-label">Manage all homepage project cards</div>
+        </div>
+        <div class="page-head__actions">
+          <div class="filter-bar" id="filter-bar">
+            <button class="filter-btn active" data-cat="All">All</button>
+            <button class="filter-btn" data-cat="Brand Identity">Brand</button>
+            <button class="filter-btn" data-cat="UI/UX Design">UI/UX</button>
+            <button class="filter-btn" data-cat="Development">Dev</button>
+            <button class="filter-btn" data-cat="Motion">Motion</button>
+            <button class="filter-btn" data-cat="Strategy">Strategy</button>
+          </div>
+          <button class="btn btn--primary" onclick="openEditor()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Project
+          </button>
+        </div>
+      </div>
+      <div class="projects-grid" id="projects-grid"></div>
+    </div>
+
+    <!-- ── CATEGORIES PAGE ───────────────────────── -->
+    <div class="page" id="page-categories">
+      <div class="page-head">
+        <div>
+          <div class="page-head__title">Categories</div>
+          <div class="page-head__sub">Project categories used across the site</div>
+        </div>
+      </div>
+      <div class="settings-section" id="cat-breakdown"></div>
+    </div>
+
+    <!-- ── SETTINGS PAGE ────────────────────────── -->
+    <div class="page" id="page-settings">
+      <div class="page-head">
+        <div>
+          <div class="page-head__title">Settings</div>
+          <div class="page-head__sub">Site configuration and data management</div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-row">
+          <div>
+            <div class="settings-row__label">Studio Name</div>
+            <div class="settings-row__desc">Displayed across the site and admin</div>
+          </div>
+          <div class="settings-row__right">
+            <input class="form-input" style="width:220px" value="Zoar Imaginarium" readonly/>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row__label">Contact Email</div>
+            <div class="settings-row__desc">Used on the footer and CTA strip</div>
+          </div>
+          <div class="settings-row__right">
+            <input class="form-input" style="width:220px" value="hello@zoarimaginarium.com"/>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row__label">Max homepage projects</div>
+            <div class="settings-row__desc">How many cards show on the homepage works grid</div>
+          </div>
+          <div class="settings-row__right">
+            <select class="form-select" style="width:100px" id="max-projects-sel">
+              <option value="3">3</option>
+              <option value="6" selected>6</option>
+              <option value="9">9</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row__label">Export project data</div>
+            <div class="settings-row__desc">Download all projects as a JSON file</div>
+          </div>
+          <div class="settings-row__right">
+            <button class="btn btn--ghost btn--sm" onclick="exportData()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export JSON
+            </button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row__label">Reset to defaults</div>
+            <div class="settings-row__desc">Restore the original 6 sample projects</div>
+          </div>
+          <div class="settings-row__right">
+            <button class="btn btn--danger btn--sm" onclick="confirmReset()">Reset Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- end shell -->
+
+<!-- ── EDITOR PANEL ──────────────────────────────────── -->
+<div class="panel-overlay" id="panel-overlay" onclick="closeEditor()"></div>
+<aside class="editor" id="editor">
+  <div class="editor__head">
+    <div class="editor__title" id="editor-title">Add New Project</div>
+    <button class="btn btn--ghost btn--icon" onclick="closeEditor()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="editor__body">
+
+    <div class="form-group">
+      <label class="form-label">Thumbnail URL<span>*</span></label>
+      <input class="form-input" id="f-thumb" placeholder="https://images.unsplash.com/photo-..." oninput="previewThumb()"/>
+      <div class="img-preview" id="thumb-preview">
+        <div class="img-preview-empty">Image preview will appear here</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Project Title<span>*</span></label>
+        <input class="form-input" id="f-title" placeholder="e.g. Lumina Rebrand"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Client Name</label>
+        <input class="form-input" id="f-client" placeholder="e.g. Lumina"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category<span>*</span></label>
+        <select class="form-select" id="f-cat">
+          <option value="">Select category...</option>
+          <option value="Brand Identity">Brand Identity</option>
+          <option value="UI/UX Design">UI/UX Design</option>
+          <option value="Development">Development</option>
+          <option value="Motion">Motion</option>
+          <option value="Strategy">Strategy</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Year</label>
+        <input class="form-input" id="f-year" placeholder="2024" maxlength="4"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Short Description<span>*</span></label>
+      <textarea class="form-textarea" id="f-desc" placeholder="1–2 sentences about what this project is and what you achieved..." style="min-height:80px"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Full Project Write-Up</label>
+      <textarea class="form-textarea" id="f-writeup" placeholder="Detailed overview of the project, challenges, solutions, results..." style="min-height:120px"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Work Process Steps</label>
+      <div class="process-steps" id="process-steps"></div>
+      <button class="btn btn--ghost btn--sm" style="align-self:flex-start;margin-top:8px" onclick="addStep()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Step
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Project Gallery <span style="color:var(--subtle);font-size:10px;text-transform:none;letter-spacing:0">(additional images)</span></label>
+      <div class="gallery-list" id="gallery-list"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input class="form-input" id="gallery-input" placeholder="Paste image URL..." style="flex:1"/>
+        <button class="btn btn--ghost btn--sm" onclick="addGalleryItem()" style="flex-shrink:0">Add</button>
+      </div>
+      <p class="form-hint">Add extra images shown on the project detail page</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Featured on Homepage</label>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+          <input type="checkbox" id="f-featured" checked style="accent-color:var(--accent);width:15px;height:15px"/>
+          Show this project in the homepage works grid
+        </label>
+      </div>
+    </div>
+
+  </div>
+  <div class="editor__foot">
+    <button class="btn btn--primary" style="flex:1" onclick="saveProject()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save Project
+    </button>
+    <button class="btn btn--ghost" onclick="closeEditor()">Cancel</button>
+  </div>
+</aside>
+
+<!-- ── CONFIRM DIALOG ─────────────────────────────────── -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h3 id="confirm-title">Are you sure?</h3>
+    <p id="confirm-msg">This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn btn--ghost" onclick="cancelConfirm()">Cancel</button>
+      <button class="btn btn--danger" id="confirm-ok" onclick="">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ──────────────────────────────────────────── -->
+<div class="toast" id="toast">
+  <div class="toast__dot" id="toast-dot"></div>
+  <span id="toast-msg">Saved successfully</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   DATA LAYER — localStorage
+   ═══════════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'zi_projects';
+
+const DEFAULT_PROJECTS = [
+  {
+    id:'lumina',title:'Luxury Skincare Rebrand',client:'Lumina',
+    category:'Brand Identity',year:'2024',featured:true,
+    thumb:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=700&h=440&fit=crop',
+    desc:'Full visual identity overhaul for Lumina, a Lagos-based luxury skincare brand. New logo, packaging, and digital presence.',
+    writeup:'We worked with the Lumina founding team to reimagine their brand from the ground up. Starting with a deep-dive workshop on their target audience, we developed a premium identity system that spans logo, color, type, packaging, and digital touchpoints.',
+    steps:['Discovery & brand audit','Mood boards & visual direction','Identity design (logo, palette, type)','Packaging design','Digital rollout'],
+    gallery:['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=500&fit=crop','https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=800&h=500&fit=crop'],
+  },
+  {
+    id:'vella',title:'SaaS Dashboard Design',client:'Vella',
+    category:'UI/UX Design',year:'2024',featured:true,
+    thumb:'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=700&h=440&fit=crop',
+    desc:'Comprehensive UX/UI redesign of Vella\'s core SaaS platform, increasing trial-to-paid conversion by 38%.',
+    writeup:'Vella came to us with a cluttered interface their users found overwhelming. We conducted user interviews, rebuilt the information architecture, and designed a clean new interface system.',
+    steps:['User research & interviews','Information architecture','Wireframes & prototypes','Visual design system','Handoff & developer support'],
+    gallery:[],
+  },
+  {
+    id:'axon',title:'Full-Stack Product Build',client:'Axon',
+    category:'Development',year:'2023',featured:true,
+    thumb:'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=700&h=440&fit=crop',
+    desc:'End-to-end development of Axon\'s web platform — from architecture to deployment, built for scale.',
+    writeup:'A full-stack build from the ground up: Next.js frontend, Node.js API, PostgreSQL database. Delivered in 8 weeks with CI/CD pipeline and 99.9% uptime SLA.',
+    steps:['Technical scoping','Architecture design','Frontend development','Backend & API','QA & deployment'],
+    gallery:[],
+  },
+  {
+    id:'koko',title:'Retail Identity System',client:'Koko',
+    category:'Brand Identity',year:'2024',featured:true,
+    thumb:'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=440&fit=crop',
+    desc:'A bold visual identity for Koko, a fast-growing retail brand targeting Gen Z across West Africa.',
+    writeup:'Koko needed a brand that was loud, confident, and distinctly African. We designed an identity built around bold typography, vibrant colour, and cultural pattern motifs.',
+    steps:['Brand strategy','Logo & wordmark','Color & type system','In-store & packaging','Social media templates'],
+    gallery:[],
+  },
+  {
+    id:'reeva',title:'Campaign & Motion Direction',client:'Reeva',
+    category:'Motion',year:'2024',featured:true,
+    thumb:'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=700&h=440&fit=crop',
+    desc:'Art direction and motion design for Reeva\'s product launch campaign — 4M views in the first week.',
+    writeup:'We concepted, directed, and produced all motion assets for Reeva\'s Q3 product launch. From hero video to social cuts, every asset was built to stop the scroll.',
+    steps:['Creative concept','Script & storyboard','Art direction','Motion production','Platform delivery'],
+    gallery:[],
+  },
+  {
+    id:'meridian',title:'Global Brand Strategy',client:'Meridian',
+    category:'Strategy',year:'2023',featured:true,
+    thumb:'https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=700&h=440&fit=crop',
+    desc:'12-week brand strategy engagement for Meridian\'s expansion into three new markets.',
+    writeup:'Meridian was entering Europe, the Middle East, and North America simultaneously. We developed a unified brand strategy that could flex by market while retaining a consistent core identity.',
+    steps:['Market research','Competitive analysis','Brand positioning','Messaging framework','Launch playbook'],
+    gallery:[],
+  }
+];
+
+function getProjects(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){return null}
+}
+
+function saveProjects(arr){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  updateFrontend(arr);
+}
+
+function initData(){
+  if(!getProjects()) saveProjects(DEFAULT_PROJECTS);
+}
+
+/* Update frontend homepage localStorage key */
+function updateFrontend(arr){
+  localStorage.setItem('zi_homepage_projects', JSON.stringify(arr));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════ */
+function navigate(pageId){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  const navEl = document.querySelector('[data-page="' + pageId + '"]');
+  if(navEl) navEl.classList.add('active');
+  const labels = {dashboard:'Dashboard', projects:'Projects', categories:'Categories', settings:'Settings'};
+  document.getElementById('bc-label').textContent = labels[pageId] || pageId;
+  renderPage(pageId);
+}
+
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => navigate(el.dataset.page));
+});
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER FUNCTIONS
+   ═══════════════════════════════════════════════════════════ */
+function renderPage(page){
+  if(page === 'dashboard') renderDashboard();
+  if(page === 'projects')  renderProjects();
+  if(page === 'categories') renderCategories();
+}
+
+const CAT_COLORS = {
+  'Brand Identity': '#DF7659',
+  'UI/UX Design':   '#4B3EF0',
+  'Development':    '#22c55e',
+  'Motion':         '#f59e0b',
+  'Strategy':       '#38bdf8',
+};
+const CAT_ICONS = {
+  'Brand Identity': `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`,
+  'UI/UX Design':   `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+  'Development':    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+  'Motion':         `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
+  'Strategy':       `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+};
+
+function renderDashboard(){
+  const projects = getProjects() || [];
+  const featured = projects.filter(p => p.featured).length;
+  const cats = [...new Set(projects.map(p => p.category))].length;
+  document.getElementById('nav-badge').textContent = projects.length;
+
+  // Stats
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <span class="stat-card__label">Total Projects</span>
+        <div class="stat-card__icon" style="background:rgba(75,62,240,.15)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${CAT_COLORS['UI/UX Design']}" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+      </div>
+      <div class="stat-card__value">${projects.length}</div>
+      <div class="stat-card__meta"><b>${featured}</b> featured on homepage</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <span class="stat-card__label">Categories</span>
+        <div class="stat-card__icon" style="background:rgba(223,118,89,.15)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${CAT_COLORS['Brand Identity']}" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        </div>
+      </div>
+      <div class="stat-card__value">${cats}</div>
+      <div class="stat-card__meta">Across all projects</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <span class="stat-card__label">Featured</span>
+        <div class="stat-card__icon" style="background:rgba(34,197,94,.12)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${CAT_COLORS['Development']}" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+      </div>
+      <div class="stat-card__value">${featured}</div>
+      <div class="stat-card__meta">Shown on homepage</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <span class="stat-card__label">Hidden</span>
+        <div class="stat-card__icon" style="background:rgba(245,158,11,.12)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${CAT_COLORS['Motion']}" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </div>
+      </div>
+      <div class="stat-card__value">${projects.length - featured}</div>
+      <div class="stat-card__meta">Not shown on homepage</div>
+    </div>
+  `;
+
+  // Recent 3
+  const recent = [...projects].slice(-3).reverse();
+  const grid = document.getElementById('recent-grid');
+  if(recent.length === 0){
+    grid.innerHTML = '<div class="empty"><div class="empty__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg></div><div class="empty__title">No projects yet</div><div class="empty__sub">Add your first project to get started</div></div>';
+    return;
+  }
+  grid.innerHTML = recent.map(p => projectCard(p, true)).join('');
+}
+
+function renderProjects(){
+  const all = getProjects() || [];
+  const activeFilter = document.querySelector('.filter-btn.active')?.dataset.cat || 'All';
+  const filtered = activeFilter === 'All' ? all : all.filter(p => p.category === activeFilter);
+  document.getElementById('proj-count-label').textContent = `${all.length} project${all.length !== 1 ? 's' : ''} total · ${filtered.length} shown`;
+  const grid = document.getElementById('projects-grid');
+  if(filtered.length === 0){
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="empty__title">No projects in this category</div><div class="empty__sub">Switch filter or add a new project</div></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(p => projectCard(p, false)).join('');
+}
+
+function projectCard(p, minimal){
+  const col = CAT_COLORS[p.category] || '#888';
+  const thumb = p.thumb
+    ? `<img src="${p.thumb}" alt="${p.title}" onerror="this.parentElement.innerHTML='<div class=\\'pcard__thumb-empty\\'><svg width=\\'24\\' height=\\'24\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'></rect><line x1=\\'8\\' y1=\\'12\\' x2=\\'16\\' y2=\\'12\\'></line></svg><span style=\\'font-size:11px;margin-top:4px\\'>No image</span></div>'"/>`
+    : `<div class="pcard__thumb-empty"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span style="font-size:11px;margin-top:4px">No image</span></div>`;
+  return `
+    <div class="pcard" onclick="openEditor('${p.id}')">
+      <div class="pcard__thumb">${thumb}</div>
+      <div class="pcard__body">
+        <div class="pcard__tag" style="background:${col}22;color:${col}">${p.category}</div>
+        <div class="pcard__title">${p.title}</div>
+        <div class="pcard__meta">${p.client} · ${p.year} · ${p.featured ? '✦ Featured' : 'Hidden'}</div>
+      </div>
+      ${!minimal ? `<div class="pcard__actions">
+        <button class="btn btn--ghost btn--sm" style="flex:1" onclick="event.stopPropagation();openEditor('${p.id}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="btn btn--danger btn--sm" onclick="event.stopPropagation();confirmDelete('${p.id}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          Delete
+        </button>
+      </div>` : ''}
+    </div>`;
+}
+
+function renderCategories(){
+  const projects = getProjects() || [];
+  const cats = {};
+  projects.forEach(p => { cats[p.category] = (cats[p.category] || 0) + 1; });
+  const el = document.getElementById('cat-breakdown');
+  if(Object.keys(cats).length === 0){
+    el.innerHTML = '<div class="settings-row"><div>No projects yet</div></div>';
+    return;
+  }
+  el.innerHTML = Object.entries(cats).map(([cat, count]) => {
+    const col = CAT_COLORS[cat] || '#888';
+    return `<div class="settings-row">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div>
+        <div>
+          <div class="settings-row__label">${cat}</div>
+          <div class="settings-row__desc">${count} project${count !== 1 ? 's' : ''}</div>
+        </div>
+      </div>
+      <div style="font-size:22px;font-weight:600;color:${col}">${count}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EDITOR
+   ═══════════════════════════════════════════════════════════ */
+let editingId = null;
+let processSteps = [];
+let galleryItems = [];
+
+function openEditor(id = null){
+  editingId = id;
+  processSteps = [];
+  galleryItems = [];
+
+  if(id){
+    const p = (getProjects() || []).find(x => x.id === id);
+    if(!p) return;
+    document.getElementById('editor-title').textContent = 'Edit Project';
+    document.getElementById('f-thumb').value     = p.thumb || '';
+    document.getElementById('f-title').value     = p.title || '';
+    document.getElementById('f-client').value    = p.client || '';
+    document.getElementById('f-cat').value       = p.category || '';
+    document.getElementById('f-year').value      = p.year || '';
+    document.getElementById('f-desc').value      = p.desc || '';
+    document.getElementById('f-writeup').value   = p.writeup || '';
+    document.getElementById('f-featured').checked = p.featured !== false;
+    processSteps = [...(p.steps || [])];
+    galleryItems = [...(p.gallery || [])];
+  } else {
+    document.getElementById('editor-title').textContent = 'Add New Project';
+    ['f-thumb','f-title','f-client','f-year','f-desc','f-writeup'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-cat').value = '';
+    document.getElementById('f-featured').checked = true;
+  }
+
+  renderSteps();
+  renderGallery();
+  previewThumb();
+
+  document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('editor').classList.add('open');
+}
+
+function closeEditor(){
+  document.getElementById('panel-overlay').classList.remove('open');
+  document.getElementById('editor').classList.remove('open');
+  editingId = null;
+}
+
+function saveProject(){
+  const title = document.getElementById('f-title').value.trim();
+  const cat   = document.getElementById('f-cat').value;
+  if(!title){ showToast('Project title is required', 'error'); return; }
+  if(!cat)  { showToast('Please select a category', 'error'); return; }
+
+  const projects = getProjects() || [];
+  const newP = {
+    id: editingId || ('proj_' + Date.now()),
+    title,
+    client:   document.getElementById('f-client').value.trim(),
+    category: cat,
+    year:     document.getElementById('f-year').value.trim() || new Date().getFullYear().toString(),
+    thumb:    document.getElementById('f-thumb').value.trim(),
+    desc:     document.getElementById('f-desc').value.trim(),
+    writeup:  document.getElementById('f-writeup').value.trim(),
+    featured: document.getElementById('f-featured').checked,
+    steps:    [...processSteps],
+    gallery:  [...galleryItems],
+  };
+
+  if(editingId){
+    const idx = projects.findIndex(p => p.id === editingId);
+    if(idx > -1) projects[idx] = newP;
+  } else {
+    projects.push(newP);
+  }
+
+  saveProjects(projects);
+  closeEditor();
+  showToast(editingId ? 'Project updated' : 'Project added', 'success');
+  document.getElementById('nav-badge').textContent = projects.length;
+  renderPage(document.querySelector('.page.active')?.id.replace('page-','') || 'dashboard');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROCESS STEPS
+   ═══════════════════════════════════════════════════════════ */
+function renderSteps(){
+  const el = document.getElementById('process-steps');
+  if(processSteps.length === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = processSteps.map((s, i) => `
+    <div class="process-step">
+      <div class="step-num">${i+1}</div>
+      <input class="form-input" value="${s}" oninput="processSteps[${i}]=this.value" style="flex:1"/>
+      <button class="remove-step" onclick="removeStep(${i})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+function addStep(){
+  processSteps.push('');
+  renderSteps();
+  const inputs = document.querySelectorAll('#process-steps input');
+  inputs[inputs.length - 1]?.focus();
+}
+
+function removeStep(i){
+  processSteps.splice(i, 1);
+  renderSteps();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GALLERY
+   ═══════════════════════════════════════════════════════════ */
+function renderGallery(){
+  const el = document.getElementById('gallery-list');
+  if(galleryItems.length === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = galleryItems.map((url, i) => `
+    <div class="gallery-item">
+      <img class="gallery-thumb" src="${url}" onerror="this.style.opacity='.3'" alt=""/>
+      <span class="gallery-url">${url}</span>
+      <button class="gallery-remove" onclick="removeGalleryItem(${i})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+function addGalleryItem(){
+  const inp = document.getElementById('gallery-input');
+  const url = inp.value.trim();
+  if(!url) return;
+  galleryItems.push(url);
+  inp.value = '';
+  renderGallery();
+}
+
+function removeGalleryItem(i){
+  galleryItems.splice(i, 1);
+  renderGallery();
+}
+
+/* Allow Enter key in gallery input */
+document.getElementById('gallery-input').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ e.preventDefault(); addGalleryItem(); }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   THUMBNAIL PREVIEW
+   ═══════════════════════════════════════════════════════════ */
+function previewThumb(){
+  const url = document.getElementById('f-thumb').value.trim();
+  const el  = document.getElementById('thumb-preview');
+  if(!url){
+    el.innerHTML = '<div class="img-preview-empty">Image preview will appear here</div>';
+    return;
+  }
+  el.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="document.getElementById('thumb-preview').innerHTML='<div class=\\'img-preview-empty\\'>⚠ Image failed to load — check the URL</div>'"/>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DELETE
+   ═══════════════════════════════════════════════════════════ */
+let _deletePending = null;
+
+function confirmDelete(id){
+  const p = (getProjects() || []).find(x => x.id === id);
+  if(!p) return;
+  _deletePending = id;
+  document.getElementById('confirm-title').textContent = 'Delete "' + p.title + '"?';
+  document.getElementById('confirm-msg').textContent   = 'This project will be permanently removed from the homepage and all data deleted. This cannot be undone.';
+  document.getElementById('confirm-ok').onclick = executeDelete;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+function executeDelete(){
+  if(!_deletePending) return;
+  const projects = (getProjects() || []).filter(p => p.id !== _deletePending);
+  saveProjects(projects);
+  _deletePending = null;
+  cancelConfirm();
+  showToast('Project deleted', 'error');
+  document.getElementById('nav-badge').textContent = projects.length;
+  renderPage('projects');
+}
+
+function cancelConfirm(){
+  document.getElementById('confirm-overlay').classList.remove('open');
+  _deletePending = null;
+}
+
+function confirmReset(){
+  _deletePending = '__reset__';
+  document.getElementById('confirm-title').textContent = 'Reset to defaults?';
+  document.getElementById('confirm-msg').textContent   = 'This will replace all current projects with the original 6 sample projects. All your edits will be lost.';
+  document.getElementById('confirm-ok').onclick = () => {
+    saveProjects(DEFAULT_PROJECTS);
+    cancelConfirm();
+    showToast('Data reset to defaults', 'success');
+    renderPage('dashboard');
+  };
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CATEGORY FILTER
+   ═══════════════════════════════════════════════════════════ */
+document.getElementById('filter-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProjects();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════ */
+let toastTimer;
+function showToast(msg, type='success'){
+  const el   = document.getElementById('toast');
+  const dot  = document.getElementById('toast-dot');
+  const txt  = document.getElementById('toast-msg');
+  txt.textContent = msg;
+  dot.style.background = type === 'success' ? 'var(--green)' : type === 'error' ? 'var(--red)' : 'var(--accent)';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORT
+   ═══════════════════════════════════════════════════════════ */
+function exportData(){
+  const data = JSON.stringify(getProjects() || [], null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'zoar-projects.json';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Exported successfully');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+   ═══════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    closeEditor();
+    cancelConfirm();
+  }
+  if((e.metaKey || e.ctrlKey) && e.key === 's'){
+    e.preventDefault();
+    if(document.getElementById('editor').classList.contains('open')) saveProject();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════ */
+initData();
+renderDashboard();
+</script>
+</body>
+</html>
