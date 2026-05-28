@@ -228,34 +228,37 @@
     .hi{color:var(--accent)}
 
     /* ── WORKS GRID ──────────────────────────── */
-    .works{padding:56px 80px 120px}
-    .works__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-    .wcard{background:var(--bg-card);overflow:hidden;cursor:pointer;transition:background .25s}
-    .wcard:hover{background:var(--bg-lift)}
-    .wcard__top{
+    .works{padding:48px 80px 100px}
+    .works__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .wcard{
+      display:flex;flex-direction:column;
+      background:#101010;border-radius:14px;overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+      cursor:pointer;text-decoration:none;color:var(--white);
+      transition:border-color .3s,transform .35s;
+    }
+    .wcard:hover{border-color:rgba(255,255,255,.16);transform:translateY(-4px)}
+    .wcard__visual{position:relative;padding:12px 12px 0}
+    .wcard__visual img{
+      width:100%;aspect-ratio:4/3;object-fit:cover;
+      border-radius:8px;display:block;
+      transition:transform .65s cubic-bezier(.25,.46,.45,.94);
+    }
+    .wcard:hover .wcard__visual img{transform:scale(1.04)}
+    .wcard__name-tag{
+      position:absolute;top:24px;right:24px;
+      font-size:11px;font-weight:500;letter-spacing:.06em;
+      color:rgba(255,255,255,.88);
+      background:rgba(0,0,0,.52);backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      border-radius:100px;padding:5px 13px;
+    }
+    .wcard__foot{
       display:flex;justify-content:space-between;align-items:center;
-      padding:14px 18px;border-bottom:1px solid var(--hairline);
+      padding:14px 16px;
     }
-    .wcard__label{
-      font-size:10px;font-weight:600;letter-spacing:.1em;
-      text-transform:uppercase;color:var(--muted);
-    }
-    .wcard__btn{
-      width:26px;height:26px;border:1px solid var(--faint);
-      border-radius:5px;display:flex;align-items:center;justify-content:center;
-      transition:all .2s;
-    }
-    .wcard:hover .wcard__btn{background:var(--white);border-color:var(--white)}
-    .wcard:hover .wcard__btn svg{stroke:var(--bg)}
-    .wcard__img{width:100%;aspect-ratio:16/10;overflow:hidden}
-    .wcard__img img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.25,.46,.45,.94)}
-    .wcard:hover .wcard__img img{transform:scale(1.05)}
-    .wcard__bot{
-      display:flex;justify-content:space-between;align-items:center;
-      padding:14px 18px;
-    }
-    .wcard__title{font-size:13px;font-weight:500}
-    .wcard__year{font-size:11px;color:var(--subtle)}
+    .wcard__cat{font-size:12px;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.02em}
+    .wcard__year{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.04em}
 
     /* ── BENTO ───────────────────────────────── */
     .features{padding:0 80px 120px}
@@ -356,13 +359,13 @@
       height:50vh;z-index:0;
       background:#1b1b1b;
       display:flex;flex-direction:column;
-      justify-content:center;
       overflow:hidden;
-      padding:0 0 48px;
+      padding:0;
     }
     .footer__ticker{
-      width:100%;overflow:hidden;
-      white-space:nowrap;
+      flex:1;
+      display:flex;align-items:center;
+      overflow:hidden;white-space:nowrap;
     }
     .footer__ticker-runner{
       display:inline-flex;align-items:center;
@@ -387,10 +390,9 @@
     }
     .footer__bottom{
       display:flex;justify-content:space-between;align-items:center;
-      padding:28px 48px 0;
+      padding:20px 48px 24px;
       border-top:1px solid rgba(255,255,255,.08);
       flex-wrap:wrap;gap:12px;
-      margin-top:auto;
     }
     .footer__copy{
       font-size:11px;color:rgba(255,255,255,.35);
@@ -551,85 +553,67 @@
   <div class="works__grid">
 
     <a href="#" class="wcard fu">
-      <div class="wcard__top">
-        <span class="wcard__label">BRAND&nbsp;—&nbsp;LUMINA</span>
-        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wcard__visual">
+        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=700&h=520&fit=crop" alt="Lumina" loading="lazy"/>
+        <span class="wcard__name-tag">Lumina</span>
       </div>
-      <div class="wcard__img">
-        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=700&h=440&fit=crop" alt="Lumina Luxury Skincare Rebrand" loading="lazy"/>
-      </div>
-      <div class="wcard__bot">
-        <span class="wcard__title">Luxury Skincare Rebrand</span>
+      <div class="wcard__foot">
+        <span class="wcard__cat">Brand Identity</span>
         <span class="wcard__year">2024</span>
       </div>
     </a>
 
     <a href="#" class="wcard fu d1">
-      <div class="wcard__top">
-        <span class="wcard__label">UX/UI&nbsp;—&nbsp;VELLA</span>
-        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wcard__visual">
+        <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=700&h=520&fit=crop" alt="Vella" loading="lazy"/>
+        <span class="wcard__name-tag">Vella</span>
       </div>
-      <div class="wcard__img">
-        <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=700&h=440&fit=crop" alt="Vella SaaS Dashboard" loading="lazy"/>
-      </div>
-      <div class="wcard__bot">
-        <span class="wcard__title">SaaS Dashboard Design</span>
+      <div class="wcard__foot">
+        <span class="wcard__cat">UX / UI Design</span>
         <span class="wcard__year">2024</span>
       </div>
     </a>
 
     <a href="#" class="wcard fu d2">
-      <div class="wcard__top">
-        <span class="wcard__label">DEV&nbsp;—&nbsp;AXON</span>
-        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wcard__visual">
+        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=700&h=520&fit=crop" alt="Axon" loading="lazy"/>
+        <span class="wcard__name-tag">Axon</span>
       </div>
-      <div class="wcard__img">
-        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=700&h=440&fit=crop" alt="Axon Full-Stack Build" loading="lazy"/>
-      </div>
-      <div class="wcard__bot">
-        <span class="wcard__title">Full-Stack Product Build</span>
+      <div class="wcard__foot">
+        <span class="wcard__cat">Development</span>
         <span class="wcard__year">2023</span>
       </div>
     </a>
 
     <a href="#" class="wcard fu">
-      <div class="wcard__top">
-        <span class="wcard__label">BRAND&nbsp;—&nbsp;KOKO</span>
-        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wcard__visual">
+        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=520&fit=crop" alt="Koko" loading="lazy"/>
+        <span class="wcard__name-tag">Koko</span>
       </div>
-      <div class="wcard__img">
-        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=440&fit=crop" alt="Koko Retail Identity" loading="lazy"/>
-      </div>
-      <div class="wcard__bot">
-        <span class="wcard__title">Retail Identity System</span>
+      <div class="wcard__foot">
+        <span class="wcard__cat">Brand Identity</span>
         <span class="wcard__year">2024</span>
       </div>
     </a>
 
     <a href="#" class="wcard fu d1">
-      <div class="wcard__top">
-        <span class="wcard__label">MOTION&nbsp;—&nbsp;REEVA</span>
-        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wcard__visual">
+        <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=700&h=520&fit=crop" alt="Reeva" loading="lazy"/>
+        <span class="wcard__name-tag">Reeva</span>
       </div>
-      <div class="wcard__img">
-        <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=700&h=440&fit=crop" alt="Reeva Campaign & Motion" loading="lazy"/>
-      </div>
-      <div class="wcard__bot">
-        <span class="wcard__title">Campaign &amp; Motion Direction</span>
+      <div class="wcard__foot">
+        <span class="wcard__cat">Motion Direction</span>
         <span class="wcard__year">2024</span>
       </div>
     </a>
 
     <a href="#" class="wcard fu d2">
-      <div class="wcard__top">
-        <span class="wcard__label">STRATEGY&nbsp;—&nbsp;MERIDIAN</span>
-        <div class="wcard__btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      <div class="wcard__visual">
+        <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=700&h=520&fit=crop" alt="Meridian" loading="lazy"/>
+        <span class="wcard__name-tag">Meridian</span>
       </div>
-      <div class="wcard__img">
-        <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=700&h=440&fit=crop" alt="Meridian Global Strategy" loading="lazy"/>
-      </div>
-      <div class="wcard__bot">
-        <span class="wcard__title">Global Brand Strategy</span>
+      <div class="wcard__foot">
+        <span class="wcard__cat">Brand Strategy</span>
         <span class="wcard__year">2023</span>
       </div>
     </a>
@@ -802,13 +786,72 @@
     c.style.transitionDelay = (i % 3) * 0.1 + 's';
   });
 
+  // ── Editorial word-reveal on scroll ──────────────
+  (function(){
+    const body = document.querySelector('.editorial__body');
+    if (!body) return;
+
+    // Split text nodes into individual word spans, preserving inline elements
+    function splitWords(el) {
+      Array.from(el.childNodes).forEach(node => {
+        if (node.nodeType === 3) { // text node
+          const frag = document.createDocumentFragment();
+          node.textContent.split(/(\s+)/).forEach(piece => {
+            if (piece.trim()) {
+              const s = document.createElement('span');
+              s.className = 'w';
+              s.textContent = piece;
+              frag.appendChild(s);
+            } else if (piece) {
+              frag.appendChild(document.createTextNode(piece));
+            }
+          });
+          node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === 1) { // element (e.g. .hi span)
+          splitWords(node);
+        }
+      });
+    }
+
+    splitWords(body);
+
+    const words = Array.from(body.querySelectorAll('.w'));
+    // Set all words to dim start color
+    words.forEach(w => {
+      w.style.color = w.closest('.hi')
+        ? 'rgba(223,118,89,0.15)'
+        : 'rgba(255,255,255,0.15)';
+    });
+
+    // Scrub-reveal each word sequentially as section scrolls into view
+    ScrollTrigger.create({
+      trigger: '.editorial',
+      start: 'top 55%',
+      end: 'bottom 45%',
+      scrub: 1.2,
+      onUpdate(self) {
+        const p = self.progress;
+        const n = words.length;
+        words.forEach((w, i) => {
+          const hi = !!w.closest('.hi');
+          // Each word activates over its own narrow window
+          const t = i / n;
+          const alpha = p >= t ? 1 : 0.15;
+          w.style.color = hi
+            ? `rgba(223,118,89,${alpha})`
+            : `rgba(255,255,255,${alpha})`;
+        });
+      }
+    });
+  })();
+
   // ── Scroll scale-out transitions ─────────────────
   gsap.registerPlugin(ScrollTrigger);
 
-  // Hero: pins in place, scales + fades as logos section slides over it
+  // Hero: pins in place, scales as logos section slides over it
+  // (no opacity fade — prevents fixed footer from bleeding through)
   gsap.to('.hero', {
     scale: 0.88,
-    opacity: 0.5,
     borderRadius: '24px',
     ease: 'none',
     scrollTrigger: {
