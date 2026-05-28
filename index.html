@@ -6,6 +6,7 @@
   <title>Zoar Imaginarium — Creative Studio</title>
   <meta name="description" content="Zoar Imaginarium is a world-class creative studio for founders and businesses who demand the extraordinary." />
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/neue-montreal" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     img{display:block;max-width:100%}
@@ -109,56 +110,83 @@
     /* ── HERO ────────────────────────────────── */
     .hero{
       min-height:100vh;
+      display:grid;grid-template-columns:1fr 1fr;
+      overflow:hidden;
+    }
+    .hero__left{
       display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      text-align:center;
-      padding:120px 48px 80px;
-      gap:40px;
+      justify-content:center;
+      padding:140px 64px 80px;
+      gap:36px;
     }
-    .hero__cross{
-      width:34px;height:34px;
-      border:1px solid var(--faint);border-radius:var(--r-sm);
-      display:flex;align-items:center;justify-content:center;
-      flex-shrink:0;
+    .hero__right{
+      position:relative;overflow:hidden;
     }
-    .hero__cross svg{stroke:var(--muted)}
-    .hero__headline{
-      font-size:clamp(38px,6.8vw,86px);
-      font-weight:300;line-height:1.08;
-      letter-spacing:-.035em;
-      max-width:960px;
-    }
-    .hero__images{
-      display:flex;gap:8px;
-      width:100%;max-width:1080px;
-    }
-    .hero__img{
-      flex:1;aspect-ratio:3/4;
-      border-radius:var(--r-lg);overflow:hidden;
-      background:var(--bg-card);position:relative;
-    }
-    .hero__img img{
+    .hero__right img{
       width:100%;height:100%;object-fit:cover;
-      transition:transform .7s cubic-bezier(.25,.46,.45,.94);
+      display:block;
     }
-    .hero__img:hover img{transform:scale(1.06)}
-    .hover-label{
-      position:absolute;bottom:12px;right:12px;
-      font-size:10px;letter-spacing:.05em;
-      background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
-      border-radius:4px;padding:4px 8px;
-      color:var(--white);pointer-events:none;
+    .hero__badge{
+      display:inline-flex;align-items:center;gap:9px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:100px;padding:8px 18px;
+      font-size:11px;font-weight:500;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--muted);
+      width:fit-content;
     }
-    .hero__cta{
+    .hero__badge-dot{
+      width:6px;height:6px;border-radius:50%;
+      background:var(--accent);flex-shrink:0;
+    }
+    .hero__headline{
+      font-size:clamp(40px,5.4vw,88px);
+      font-weight:300;line-height:1.04;
+      letter-spacing:-.04em;
+    }
+    .hero__em{
+      font-family:'Playfair Display',Georgia,serif;
+      font-style:italic;font-weight:400;
+      color:var(--accent);letter-spacing:-.01em;
+    }
+    .hero__sub{
+      font-size:16px;line-height:1.7;
+      color:var(--muted);max-width:460px;
+    }
+    .hero__actions{
+      display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+    }
+    .hero__btn-filled{
       display:inline-block;
-      padding:14px 40px;
-      border:1px solid rgba(255,255,255,.28);
-      font-size:11px;font-weight:500;
-      letter-spacing:.12em;text-transform:uppercase;
+      padding:16px 38px;
+      background:var(--accent);color:var(--white);
+      font-size:12px;font-weight:600;
+      letter-spacing:.1em;text-transform:uppercase;
       border-radius:var(--r-sm);
-      transition:all .25s ease;
+      transition:opacity .2s;
     }
-    .hero__cta:hover{background:var(--white);color:var(--bg);border-color:var(--white)}
+    .hero__btn-filled:hover{opacity:.82}
+    .hero__btn-link{
+      font-size:13px;font-weight:500;
+      letter-spacing:.03em;color:var(--white);
+      border-bottom:1px solid rgba(255,255,255,.28);
+      padding-bottom:2px;transition:border-color .2s;
+    }
+    .hero__btn-link:hover{border-color:var(--white)}
+    .hero__trusted{
+      display:flex;flex-direction:column;gap:12px;
+      padding-top:32px;border-top:1px solid var(--hairline);
+    }
+    .hero__trusted-label{
+      font-size:10px;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--subtle);
+    }
+    .hero__trusted-list{
+      display:flex;gap:28px;flex-wrap:wrap;
+    }
+    .hero__trusted-list span{
+      font-size:12px;font-weight:500;
+      letter-spacing:.03em;color:var(--muted);
+    }
 
     /* ── LOGOS ───────────────────────────────── */
     .logos{border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);overflow:hidden}
@@ -318,33 +346,51 @@
     .cta-strip__text a{color:var(--white);transition:color .2s}
     .cta-strip__text a:hover{color:var(--accent)}
 
-    /* ── FOOTER ──────────────────────────────── */
+    /* ── FOOTER (brand reveal) ───────────────── */
     .footer{
-      max-width:1400px;margin:0 auto;
-      padding:64px 64px 48px;
-      border-top:1px solid var(--hairline);
+      min-height:100vh;
+      display:flex;flex-direction:column;
+      justify-content:space-between;
+      padding:80px 64px 56px;
+      background:var(--accent);
+      overflow:hidden;
     }
-    .footer__main{display:grid;grid-template-columns:1fr 1fr;gap:80px;padding-bottom:60px}
-    .footer__brand{font-size:14px;font-weight:500;letter-spacing:.03em}
-    .footer__tagline{font-size:12px;color:var(--subtle);margin-top:6px}
-    .footer__nav{display:flex;gap:28px;margin-top:32px}
-    .footer__nav a{font-size:12px;color:var(--subtle);letter-spacing:.04em;transition:color .2s}
-    .footer__nav a:hover{color:var(--white)}
-    .footer__offices{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-    .footer__office-tag{
-      font-size:10px;font-weight:600;letter-spacing:.1em;
-      text-transform:uppercase;color:var(--subtle);margin-bottom:10px;
+    .footer__reveal{
+      flex:1;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      gap:16px;text-align:center;
+      padding:40px 0;
     }
-    .footer__office-text{font-size:13px;line-height:1.65;color:var(--muted)}
+    .footer__name{
+      font-size:clamp(52px,10vw,156px);
+      font-weight:800;line-height:.95;
+      letter-spacing:-.05em;color:var(--white);
+    }
+    .footer__tagline{
+      font-size:14px;letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.55);
+      font-weight:400;
+    }
     .footer__bottom{
       display:flex;justify-content:space-between;align-items:center;
-      padding-top:28px;border-top:1px solid var(--hairline);
+      padding-top:28px;border-top:1px solid rgba(255,255,255,.18);
+      flex-wrap:wrap;gap:16px;
     }
-    .footer__copy{font-size:11px;color:var(--subtle);letter-spacing:.03em}
-    .footer__soc{display:flex;gap:22px}
+    .footer__copy{
+      font-size:11px;color:rgba(255,255,255,.5);
+      letter-spacing:.04em;
+    }
+    .footer__nav{display:flex;gap:24px;flex-wrap:wrap}
+    .footer__nav a{
+      font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+      color:rgba(255,255,255,.55);transition:color .2s;
+    }
+    .footer__nav a:hover{color:var(--white)}
+    .footer__soc{display:flex;gap:20px}
     .footer__soc a{
-      font-size:11px;letter-spacing:.07em;text-transform:uppercase;
-      color:var(--subtle);transition:color .2s;
+      font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+      color:rgba(255,255,255,.55);transition:color .2s;
     }
     .footer__soc a:hover{color:var(--white)}
 
@@ -358,15 +404,19 @@
       .works__grid{grid-template-columns:repeat(2,1fr)}
       .about__grid{grid-template-columns:1fr;gap:48px}
     }
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .hero__right{display:none}
+      .hero__left{padding:120px 40px 72px;gap:28px}
+    }
     @media(max-width:768px){
       .nav{padding:20px 24px}
-      .hero{padding:100px 24px 64px;gap:28px}
-      .hero__images{gap:5px}
-      .hero__img{border-radius:12px}
-      .editorial,.works,.features,.about,.cta-strip,.footer{padding-left:24px;padding-right:24px}
+      .hero__left{padding:110px 24px 64px}
+      .editorial,.works,.features,.about,.cta-strip{padding-left:24px;padding-right:24px}
+      .footer{padding:60px 24px 40px}
+      .footer__name{letter-spacing:-.04em}
+      .footer__bottom{flex-direction:column;align-items:flex-start}
       .bento,.works__grid{grid-template-columns:1fr}
-      .footer__main{grid-template-columns:1fr;gap:40px}
-      .footer__offices{grid-template-columns:1fr;gap:28px}
       .overlay{padding:96px 28px 48px}
     }
   </style>
@@ -399,35 +449,40 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero__cross" aria-hidden="true">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <line x1="7" y1="1" x2="7" y2="13" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="1" y1="7" x2="13" y2="7" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
+  <div class="hero__left">
+    <div class="hero__badge">
+      <span class="hero__badge-dot"></span>
+      World-Class Creative Studio
+    </div>
+
+    <h1 class="hero__headline fu">
+      Ideas that<br>
+      <em class="hero__em">move</em> brands
+    </h1>
+
+    <p class="hero__sub fu d1">
+      We blend strategy, design and technology to create extraordinary brand identities — built for founders who demand the extraordinary.
+    </p>
+
+    <div class="hero__actions fu d2">
+      <a href="#contact" class="hero__btn-filled">Start a Project</a>
+      <a href="#work" class="hero__btn-link">See Our Work ↓</a>
+    </div>
+
+    <div class="hero__trusted fu d3">
+      <span class="hero__trusted-label">Trusted by</span>
+      <div class="hero__trusted-list">
+        <span>Lumina Co.</span>
+        <span>Vella Studio</span>
+        <span>Axon Labs</span>
+        <span>Meridian</span>
+      </div>
+    </div>
   </div>
 
-  <h1 class="hero__headline">We build brands that<br>move worlds</h1>
-
-  <div class="hero__images">
-    <div class="hero__img">
-      <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=520&fit=crop&crop=faces" alt="Creative direction" />
-    </div>
-    <div class="hero__img">
-      <img src="https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=400&h=520&fit=crop" alt="Brand work" />
-    </div>
-    <div class="hero__img">
-      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=520&fit=crop" alt="Digital art" />
-    </div>
-    <div class="hero__img">
-      <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&h=520&fit=crop" alt="Design workspace" />
-    </div>
-    <div class="hero__img">
-      <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=520&fit=crop" alt="Motion and visual" />
-      <span class="hover-label">Hover me ↗</span>
-    </div>
+  <div class="hero__right">
+    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=900&q=85" alt="Creative direction" />
   </div>
-
-  <a href="#contact" class="hero__cta">GET STARTED</a>
 </section>
 
 <!-- LOGOS -->
@@ -659,37 +714,24 @@
   </p>
 </section>
 
-<!-- FOOTER -->
+<!-- FOOTER — Brand Reveal -->
 <footer class="footer">
-  <div class="footer__main">
-    <div>
-      <span class="footer__brand">Zoar Imaginarium</span>
-      <p class="footer__tagline">Creative Studio — Est. 2020</p>
-      <nav class="footer__nav">
-        <a href="#work">Work</a>
-        <a href="#services">Services</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-    <div class="footer__offices">
-      <div>
-        <p class="footer__office-tag">HQ</p>
-        <p class="footer__office-text">Zoar Creative Hub<br>Victoria Island<br>Lagos, Nigeria</p>
-      </div>
-      <div>
-        <p class="footer__office-tag">Global</p>
-        <p class="footer__office-text">Remote-first studio<br>Serving clients worldwide<br>hello@zoarimmaginarium.com</p>
-      </div>
-    </div>
+  <div class="footer__reveal">
+    <h2 class="footer__name">Zoar<br>Imaginarium</h2>
+    <p class="footer__tagline">Creative Studio · Est. 2020 · Lagos, Nigeria</p>
   </div>
   <div class="footer__bottom">
     <p class="footer__copy">© 2026 Zoar Imaginarium. All rights reserved.</p>
+    <nav class="footer__nav">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
     <div class="footer__soc">
       <a href="#">Instagram</a>
       <a href="#">Behance</a>
       <a href="#">LinkedIn</a>
-      <a href="#">Twitter</a>
     </div>
   </div>
 </footer>
