@@ -709,6 +709,13 @@
       </div>
     </div>
 
+    <div class="form-row">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Industry</label>
+        <input class="form-input" id="f-industry" placeholder="e.g. Luxury &amp; Beauty, Technology, Retail…"/>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="form-label">Short Description<span>*</span></label>
       <textarea class="form-textarea" id="f-desc" placeholder="1–2 sentences about what this project is and what you achieved..." style="min-height:80px"></textarea>
@@ -785,56 +792,56 @@ const STORAGE_KEY = 'zi_projects';
 const DEFAULT_PROJECTS = [
   {
     id:'lumina',title:'Luxury Skincare Rebrand',client:'Lumina',
-    category:'Brand Identity',year:'2024',featured:true,
+    category:'Brand Identity',industry:'Luxury & Beauty',year:'2024',featured:true,
     thumb:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=700&h=440&fit=crop',
     desc:'Full visual identity overhaul for Lumina, a Lagos-based luxury skincare brand. New logo, packaging, and digital presence.',
-    writeup:'We worked with the Lumina founding team to reimagine their brand from the ground up. Starting with a deep-dive workshop on their target audience, we developed a premium identity system that spans logo, color, type, packaging, and digital touchpoints.',
-    steps:['Discovery & brand audit','Mood boards & visual direction','Identity design (logo, palette, type)','Packaging design','Digital rollout'],
+    writeup:'We worked with the Lumina founding team to reimagine their brand from the ground up. Starting with a deep-dive workshop on their target audience, we developed a premium identity system spanning logo, colour, type, packaging, and digital touchpoints. The result is an identity that feels simultaneously luxurious and approachable — deeply rooted in its Lagos origins while positioned for a global audience.',
+    steps:['Discovery & brand audit','Mood boards & visual direction','Identity design — logo, palette, type','Packaging design','Digital rollout & brand guidelines'],
     gallery:['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=500&fit=crop','https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=800&h=500&fit=crop'],
   },
   {
     id:'vella',title:'SaaS Dashboard Design',client:'Vella',
-    category:'UI/UX Design',year:'2024',featured:true,
+    category:'UI/UX Design',industry:'Technology / SaaS',year:'2024',featured:true,
     thumb:'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=700&h=440&fit=crop',
     desc:'Comprehensive UX/UI redesign of Vella\'s core SaaS platform, increasing trial-to-paid conversion by 38%.',
-    writeup:'Vella came to us with a cluttered interface their users found overwhelming. We conducted user interviews, rebuilt the information architecture, and designed a clean new interface system.',
-    steps:['User research & interviews','Information architecture','Wireframes & prototypes','Visual design system','Handoff & developer support'],
+    writeup:'Vella came to us with a cluttered interface their users found overwhelming. We conducted user interviews, rebuilt the information architecture from scratch, and designed a clean new interface system that made the product feel effortless.',
+    steps:['User research & interviews','Information architecture','Wireframes & interactive prototypes','Visual design system','Developer handoff & QA support'],
     gallery:[],
   },
   {
     id:'axon',title:'Full-Stack Product Build',client:'Axon',
-    category:'Development',year:'2023',featured:true,
+    category:'Development',industry:'Technology',year:'2023',featured:true,
     thumb:'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=700&h=440&fit=crop',
     desc:'End-to-end development of Axon\'s web platform — from architecture to deployment, built for scale.',
-    writeup:'A full-stack build from the ground up: Next.js frontend, Node.js API, PostgreSQL database. Delivered in 8 weeks with CI/CD pipeline and 99.9% uptime SLA.',
-    steps:['Technical scoping','Architecture design','Frontend development','Backend & API','QA & deployment'],
+    writeup:'A full-stack build from the ground up: Next.js frontend, Node.js API, PostgreSQL database. Delivered in 8 weeks with CI/CD pipeline and a 99.9% uptime SLA.',
+    steps:['Technical scoping & architecture design','Frontend development (Next.js)','Backend & REST API (Node.js)','Database design & optimisation','QA, CI/CD & deployment'],
     gallery:[],
   },
   {
     id:'koko',title:'Retail Identity System',client:'Koko',
-    category:'Brand Identity',year:'2024',featured:true,
+    category:'Brand Identity',industry:'Retail / Fashion',year:'2024',featured:true,
     thumb:'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=440&fit=crop',
     desc:'A bold visual identity for Koko, a fast-growing retail brand targeting Gen Z across West Africa.',
-    writeup:'Koko needed a brand that was loud, confident, and distinctly African. We designed an identity built around bold typography, vibrant colour, and cultural pattern motifs.',
-    steps:['Brand strategy','Logo & wordmark','Color & type system','In-store & packaging','Social media templates'],
+    writeup:'Koko needed a brand that was loud, confident, and distinctly African. We designed an identity built around bold typography, vibrant colour, and cultural pattern motifs that speak directly to a Gen Z audience.',
+    steps:['Brand strategy & positioning','Logo & wordmark design','Colour & type system','In-store signage & packaging','Social media templates & launch kit'],
     gallery:[],
   },
   {
     id:'reeva',title:'Campaign & Motion Direction',client:'Reeva',
-    category:'Motion',year:'2024',featured:true,
+    category:'Motion',industry:'Entertainment',year:'2024',featured:true,
     thumb:'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=700&h=440&fit=crop',
     desc:'Art direction and motion design for Reeva\'s product launch campaign — 4M views in the first week.',
-    writeup:'We concepted, directed, and produced all motion assets for Reeva\'s Q3 product launch. From hero video to social cuts, every asset was built to stop the scroll.',
-    steps:['Creative concept','Script & storyboard','Art direction','Motion production','Platform delivery'],
+    writeup:'We concepted, directed, and produced all motion assets for Reeva\'s Q3 product launch. From the hero brand film to social-first cuts and animated stills, every asset was built to stop the scroll.',
+    steps:['Creative concept & treatment','Script & storyboard','Art direction & casting','Motion production & editing','Platform delivery & asset handoff'],
     gallery:[],
   },
   {
     id:'meridian',title:'Global Brand Strategy',client:'Meridian',
-    category:'Strategy',year:'2023',featured:true,
+    category:'Strategy',industry:'Professional Services',year:'2023',featured:true,
     thumb:'https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=700&h=440&fit=crop',
     desc:'12-week brand strategy engagement for Meridian\'s expansion into three new markets.',
     writeup:'Meridian was entering Europe, the Middle East, and North America simultaneously. We developed a unified brand strategy that could flex by market while retaining a consistent core identity.',
-    steps:['Market research','Competitive analysis','Brand positioning','Messaging framework','Launch playbook'],
+    steps:['Market research & competitive analysis','Brand audit & positioning workshop','Core brand strategy & positioning','Messaging framework per market','Launch playbook & guidelines'],
     gallery:[],
   }
 ];
@@ -993,6 +1000,11 @@ function projectCard(p, minimal){
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Edit
         </button>
+        ${['lumina','vella','axon','koko','reeva','meridian'].includes(p.id) ? `
+        <a class="btn btn--ghost btn--sm" href="../work/${p.id}.html" target="_blank" onclick="event.stopPropagation()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View
+        </a>` : ''}
         <button class="btn btn--danger btn--sm" onclick="event.stopPropagation();confirmDelete('${p.id}')">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
           Delete
@@ -1041,19 +1053,20 @@ function openEditor(id = null){
     const p = (getProjects() || []).find(x => x.id === id);
     if(!p) return;
     document.getElementById('editor-title').textContent = 'Edit Project';
-    document.getElementById('f-thumb').value     = p.thumb || '';
-    document.getElementById('f-title').value     = p.title || '';
-    document.getElementById('f-client').value    = p.client || '';
+    document.getElementById('f-thumb').value     = p.thumb    || '';
+    document.getElementById('f-title').value     = p.title    || '';
+    document.getElementById('f-client').value    = p.client   || '';
     document.getElementById('f-cat').value       = p.category || '';
-    document.getElementById('f-year').value      = p.year || '';
-    document.getElementById('f-desc').value      = p.desc || '';
-    document.getElementById('f-writeup').value   = p.writeup || '';
+    document.getElementById('f-year').value      = p.year     || '';
+    document.getElementById('f-industry').value  = p.industry || '';
+    document.getElementById('f-desc').value      = p.desc     || '';
+    document.getElementById('f-writeup').value   = p.writeup  || '';
     document.getElementById('f-featured').checked = p.featured !== false;
     processSteps = [...(p.steps || [])];
     galleryItems = [...(p.gallery || [])];
   } else {
     document.getElementById('editor-title').textContent = 'Add New Project';
-    ['f-thumb','f-title','f-client','f-year','f-desc','f-writeup'].forEach(id => document.getElementById(id).value = '');
+    ['f-thumb','f-title','f-client','f-year','f-industry','f-desc','f-writeup'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('f-cat').value = '';
     document.getElementById('f-featured').checked = true;
   }
@@ -1080,10 +1093,11 @@ function saveProject(){
 
   const projects = getProjects() || [];
   const newP = {
-    id: editingId || ('proj_' + Date.now()),
+    id:       editingId || ('proj_' + Date.now()),
     title,
     client:   document.getElementById('f-client').value.trim(),
     category: cat,
+    industry: document.getElementById('f-industry').value.trim(),
     year:     document.getElementById('f-year').value.trim() || new Date().getFullYear().toString(),
     thumb:    document.getElementById('f-thumb').value.trim(),
     desc:     document.getElementById('f-desc').value.trim(),

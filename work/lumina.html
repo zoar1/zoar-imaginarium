@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Project — Zoar Imaginarium</title>
+  <meta id="page-desc" name="description" content="" />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/neue-montreal" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    img{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    button{border:none;background:none;cursor:pointer;font:inherit}
+
+    :root{
+      --bg:#111111;
+      --white:#ffffff;
+      --muted:rgba(255,255,255,.52);
+      --subtle:rgba(255,255,255,.32);
+      --hairline:rgba(255,255,255,.08);
+      --accent:#DF7659;
+      --font:'Neue Montreal','Inter',system-ui,sans-serif;
+    }
+
+    html{scroll-behavior:smooth}
+    body{
+      font-family:var(--font);
+      background:#0a0a0a;
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+      line-height:1.5;
+    }
+
+    /* ── NAV ─────────────────────────────────────── */
+    .nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:26px 48px;pointer-events:none;
+    }
+    .nav>*{pointer-events:auto}
+    .nav__back{
+      display:inline-flex;align-items:center;gap:10px;
+      font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--muted);transition:color .25s,gap .25s;
+    }
+    .nav__back:hover{color:var(--white);gap:14px}
+    .nav__back svg{transition:transform .25s}
+    .nav__back:hover svg{transform:translateX(-3px)}
+    .nav__menu{
+      font-size:11px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--muted);cursor:pointer;transition:color .2s;
+    }
+    .nav__menu:hover{color:var(--white)}
+
+    /* ── OVERLAY ─────────────────────────────────── */
+    .overlay{
+      position:fixed;inset:0;z-index:90;background:#0d0d0d;
+      display:flex;flex-direction:column;justify-content:flex-end;
+      padding:96px 80px 72px;
+      opacity:0;pointer-events:none;transform:translateY(-8px);
+      transition:opacity .5s ease,transform .5s ease;
+    }
+    .overlay.open{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .overlay__links{display:flex;flex-direction:column;gap:12px;margin-bottom:auto;padding-top:48px}
+    .overlay__link{
+      font-size:clamp(36px,6vw,76px);font-weight:500;
+      letter-spacing:-.03em;line-height:1.1;color:var(--muted);
+      transition:color .3s,transform .3s;
+    }
+    .overlay__link:hover{color:var(--white);transform:translateX(12px)}
+    .overlay__foot{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+    .overlay__brand{font-size:12px;color:var(--subtle);line-height:1.7}
+    .overlay__soc{display:flex;gap:24px}
+    .overlay__soc a{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+    .overlay__soc a:hover{color:var(--white)}
+
+    /* ── WORK HERO ────────────────────────────────── */
+    .wh{
+      position:relative;height:100vh;min-height:700px;
+      display:flex;flex-direction:column;justify-content:flex-end;
+      overflow:hidden;
+    }
+    .wh__bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+    .wh__bg img{
+      width:100%;height:112%;object-fit:cover;display:block;
+      transform-origin:center center;
+    }
+    .wh__bg::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to top,rgba(8,8,8,.95) 0%,rgba(8,8,8,.52) 52%,rgba(8,8,8,.15) 100%);
+    }
+    .wh__inner{position:relative;z-index:1;padding:0 80px 88px}
+    .wh__cat{
+      display:inline-flex;align-items:center;gap:10px;
+      font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--accent);margin-bottom:22px;
+    }
+    .wh__cat-line{width:24px;height:1px;background:var(--accent);flex-shrink:0}
+    .wh__title{
+      font-size:clamp(44px,6.5vw,96px);
+      font-weight:600;letter-spacing:-.03em;line-height:1.02;
+      max-width:900px;margin-bottom:22px;
+    }
+    .wh__tagline{
+      font-size:clamp(15px,1.25vw,18px);
+      color:var(--muted);max-width:540px;
+      line-height:1.68;font-weight:300;
+    }
+
+    /* ── META STRIP ──────────────────────────────── */
+    .wmeta{
+      display:grid;grid-template-columns:repeat(4,1fr);
+      border-bottom:1px solid var(--hairline);
+      background:var(--bg);
+    }
+    .wmeta__item{
+      padding:40px 52px;
+      border-right:1px solid var(--hairline);
+    }
+    .wmeta__item:last-child{border-right:none}
+    .wmeta__label{
+      font-size:10px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--subtle);margin-bottom:10px;
+    }
+    .wmeta__value{
+      font-size:17px;font-weight:500;
+      letter-spacing:-.01em;color:var(--white);line-height:1.3;
+    }
+
+    /* ── STORY ───────────────────────────────────── */
+    .wstory{
+      display:grid;grid-template-columns:260px 1fr;
+      padding:104px 52px;
+      border-bottom:1px solid var(--hairline);
+      background:var(--bg);
+    }
+    .wsection-label{
+      font-size:10px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--subtle);
+      padding-top:6px;padding-left:28px;
+    }
+    .wstory__body{padding:0 28px;max-width:700px}
+    .wstory__body p{
+      font-size:clamp(18px,1.8vw,24px);
+      font-weight:300;line-height:1.68;
+      letter-spacing:-.01em;color:var(--white);
+    }
+
+    /* ── GALLERY ─────────────────────────────────── */
+    .wgallery{padding:0 52px 96px;background:var(--bg)}
+    .wgallery__hero-wrap{
+      width:100%;overflow:hidden;border-radius:16px;margin-bottom:12px;
+    }
+    .wgallery__hero-wrap img{
+      width:100%;aspect-ratio:16/7;object-fit:cover;display:block;
+      transition:transform .8s cubic-bezier(.25,.46,.45,.94);
+    }
+    .wgallery__hero-wrap:hover img{transform:scale(1.02)}
+    .wgallery__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .wgallery__grid-item{overflow:hidden;border-radius:12px}
+    .wgallery__grid-item img{
+      width:100%;aspect-ratio:4/3;object-fit:cover;display:block;
+      transition:transform .8s cubic-bezier(.25,.46,.45,.94);
+    }
+    .wgallery__grid-item:hover img{transform:scale(1.04)}
+
+    /* ── PROCESS ─────────────────────────────────── */
+    .wprocess{
+      display:grid;grid-template-columns:260px 1fr;
+      padding:88px 52px;
+      border-top:1px solid var(--hairline);
+      border-bottom:1px solid var(--hairline);
+      background:var(--bg);
+    }
+    .wprocess__steps{padding:0 28px}
+    .wprocess__step{
+      display:flex;align-items:flex-start;gap:22px;
+      padding:22px 0;border-bottom:1px solid var(--hairline);
+    }
+    .wprocess__step:first-child{padding-top:0}
+    .wprocess__step:last-child{border-bottom:none}
+    .wprocess__num{
+      font-size:11px;font-weight:500;color:var(--subtle);
+      letter-spacing:.04em;flex-shrink:0;min-width:24px;padding-top:3px;
+    }
+    .wprocess__text{font-size:16px;font-weight:400;letter-spacing:-.01em;color:var(--white);line-height:1.5}
+
+    /* ── NEXT PROJECT ────────────────────────────── */
+    .wnext{
+      padding:80px;border-bottom:1px solid var(--hairline);
+      background:var(--bg);
+      display:flex;justify-content:space-between;align-items:center;gap:32px;
+    }
+    .wnext__left{display:flex;flex-direction:column;gap:10px}
+    .wnext__eyebrow{
+      font-size:10px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--subtle);
+    }
+    .wnext__link{
+      display:inline-flex;align-items:center;gap:18px;
+      font-size:clamp(22px,3vw,40px);font-weight:600;
+      letter-spacing:-.025em;color:var(--muted);
+      transition:color .3s;
+    }
+    .wnext__link:hover{color:var(--white)}
+    .wnext__arrow{font-size:1em;display:inline-block;transition:transform .3s}
+    .wnext__link:hover .wnext__arrow{transform:translateX(10px)}
+    .wnext__thumb{
+      width:220px;height:138px;
+      overflow:hidden;border-radius:10px;flex-shrink:0;
+    }
+    .wnext__thumb img{
+      width:100%;height:100%;object-fit:cover;
+      transition:transform .6s ease;
+    }
+    .wnext:hover .wnext__thumb img{transform:scale(1.08)}
+
+    /* ── CTA ─────────────────────────────────────── */
+    .wcta{
+      padding:100px 80px 120px;
+      background:var(--bg);position:relative;z-index:1;
+    }
+    .wcta__eyebrow{
+      font-size:10px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--subtle);margin-bottom:20px;
+    }
+    .wcta__text{
+      font-size:clamp(30px,4.5vw,64px);font-weight:300;
+      letter-spacing:-.025em;line-height:1.2;
+      color:var(--muted);max-width:820px;
+    }
+    .wcta__text a{
+      color:var(--white);font-weight:500;
+      border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:2px;
+      transition:color .2s,border-color .2s;
+    }
+    .wcta__text a:hover{color:var(--accent);border-color:var(--accent)}
+
+    /* ── FOOTER ─────────────────────────────────── */
+    .footer{
+      position:fixed;bottom:0;left:0;right:0;
+      height:50vh;z-index:0;background:#1b1b1b;
+      display:flex;flex-direction:column;overflow:hidden;padding:0;
+    }
+    .footer__ticker{flex:1;display:flex;align-items:center;overflow:hidden;white-space:nowrap}
+    .footer__ticker-runner{
+      display:inline-flex;align-items:center;
+      animation:footer-roll 18s linear infinite;
+    }
+    @keyframes footer-roll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .footer__ticker-item{
+      font-size:clamp(52px,8vw,128px);font-weight:900;letter-spacing:-.03em;
+      text-transform:uppercase;color:var(--white);white-space:nowrap;padding:0 72px;line-height:1;
+    }
+    .footer__ticker-sep{
+      font-size:clamp(20px,3vw,48px);color:rgba(255,255,255,.25);
+      white-space:nowrap;flex-shrink:0;font-weight:300;
+    }
+    .footer__bottom{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:20px 48px 24px;
+      border-top:1px solid rgba(255,255,255,.08);flex-wrap:wrap;gap:12px;
+    }
+    .footer__copy{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.04em}
+    .footer__nav{display:flex;gap:24px;flex-wrap:wrap}
+    .footer__nav a{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);transition:color .2s}
+    .footer__nav a:hover{color:var(--white)}
+    .footer__soc{display:flex;gap:20px}
+    .footer__soc a{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);transition:color .2s}
+    .footer__soc a:hover{color:var(--white)}
+
+    /* ── SPACER & ANIMATIONS ─────────────────────── */
+    .footer-spacer{height:50vh;position:relative;z-index:1;background:transparent}
+    .fu{opacity:0;transform:translateY(24px);transition:opacity .75s ease,transform .75s ease}
+    .fu.in{opacity:1;transform:translateY(0)}
+    .d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media(max-width:960px){
+      .wmeta{grid-template-columns:repeat(2,1fr)}
+      .wmeta__item:nth-child(2){border-right:none}
+      .wstory,.wprocess{grid-template-columns:1fr}
+      .wsection-label{padding-left:0;margin-bottom:24px}
+      .wstory__body,.wprocess__steps{padding:0}
+    }
+    @media(max-width:768px){
+      .nav{padding:20px 24px}
+      .wh__inner{padding:0 28px 64px}
+      .wmeta__item{padding:28px}
+      .wstory,.wprocess{padding:64px 28px}
+      .wgallery{padding:0 28px 64px}
+      .wnext{padding:56px 28px;flex-direction:column;align-items:flex-start}
+      .wnext__thumb{width:100%;height:160px}
+      .wcta{padding:64px 28px 96px}
+      .wgallery__grid{grid-template-columns:1fr}
+      .overlay{padding:96px 28px 48px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html#work" class="nav__back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Work
+  </a>
+  <button class="nav__menu" id="menuBtn">MENU</button>
+</nav>
+
+<!-- OVERLAY MENU -->
+<div class="overlay" id="overlay">
+  <nav class="overlay__links">
+    <a class="overlay__link" href="../index.html#work">Work</a>
+    <a class="overlay__link" href="../index.html#services">Services</a>
+    <a class="overlay__link" href="../index.html#about">About</a>
+    <a class="overlay__link" href="../index.html#contact">Contact</a>
+  </nav>
+  <div class="overlay__foot">
+    <p class="overlay__brand">Zoar Imaginarium — Est. 2020<br>Lagos, Nigeria — Global</p>
+    <div class="overlay__soc">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<!-- WORK HERO -->
+<section class="wh">
+  <div class="wh__bg">
+    <img id="wh-img" src="" alt="" />
+  </div>
+  <div class="wh__inner">
+    <div class="wh__cat fu">
+      <span class="wh__cat-line"></span>
+      <span id="wh-cat"></span>
+    </div>
+    <h1 class="wh__title fu" id="wh-title"></h1>
+    <p class="wh__tagline fu d1" id="wh-tagline"></p>
+  </div>
+</section>
+
+<!-- META STRIP -->
+<div class="wmeta">
+  <div class="wmeta__item fu">
+    <div class="wmeta__label">Client</div>
+    <div class="wmeta__value" id="meta-client">—</div>
+  </div>
+  <div class="wmeta__item fu d1">
+    <div class="wmeta__label">Scope</div>
+    <div class="wmeta__value" id="meta-scope">—</div>
+  </div>
+  <div class="wmeta__item fu d2">
+    <div class="wmeta__label">Industry</div>
+    <div class="wmeta__value" id="meta-industry">—</div>
+  </div>
+  <div class="wmeta__item fu d3">
+    <div class="wmeta__label">Year</div>
+    <div class="wmeta__value" id="meta-year">—</div>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="wstory">
+  <div class="wsection-label fu">The Brief</div>
+  <div class="wstory__body">
+    <p class="fu d1" id="story-writeup"></p>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="wgallery" id="gallery-section">
+  <div id="gallery-inner"></div>
+</section>
+
+<!-- PROCESS -->
+<section class="wprocess" id="process-section">
+  <div class="wsection-label fu">Our Process</div>
+  <div class="wprocess__steps" id="process-steps"></div>
+</section>
+
+<!-- NEXT PROJECT -->
+<section class="wnext">
+  <div class="wnext__left">
+    <div class="wnext__eyebrow">Next Project</div>
+    <a class="wnext__link fu" id="wnext-link" href="#">
+      <span id="wnext-title">—</span>
+      <span class="wnext__arrow">→</span>
+    </a>
+  </div>
+  <div class="wnext__thumb fu d1">
+    <img id="wnext-thumb" src="" alt="" />
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="wcta">
+  <p class="wcta__eyebrow fu">Start something great</p>
+  <p class="wcta__text fu d1">
+    Ready to build something the<br>world has never seen?
+    <a href="../index.html#contact">Let's talk&nbsp;→</a>
+  </p>
+</section>
+
+<!-- FOOTER SPACER -->
+<div class="footer-spacer"></div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__ticker">
+    <div class="footer__ticker-runner">
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">© 2026 Zoar Imaginarium. All rights reserved.</p>
+    <nav class="footer__nav">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="footer__soc">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ─────────────────────────────────────────────────────
+   PROJECT CONFIG — unique per page
+───────────────────────────────────────────────────── */
+const PROJECT_ID = 'lumina';
+
+const FALLBACK = {
+  id:'lumina',
+  title:'Luxury Skincare Rebrand',
+  client:'Lumina',
+  category:'Brand Identity',
+  industry:'Luxury & Beauty',
+  year:'2024',
+  thumb:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1800&h=1000&fit=crop',
+  desc:'Full visual identity overhaul for Lumina, a Lagos-based luxury skincare brand — new logo, packaging, and digital presence.',
+  writeup:'We worked with the Lumina founding team to reimagine their brand from the ground up. Starting with a deep-dive workshop on their target audience, we developed a premium identity system spanning logo, colour, type, packaging, and digital touchpoints. The result is an identity that feels simultaneously luxurious and approachable — deeply rooted in its Lagos origins while positioned for a global audience.',
+  steps:['Discovery & brand audit','Mood boards & visual direction','Identity design — logo, palette, type','Packaging design','Digital rollout & brand guidelines'],
+  gallery:[
+    'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1400&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&h=600&fit=crop'
+  ],
+};
+
+/* ─────────────────────────────────────────────────────
+   DATA LOADING
+───────────────────────────────────────────────────── */
+function getProject(){
+  try{
+    const raw = localStorage.getItem('zi_projects');
+    if(raw){
+      const p = JSON.parse(raw).find(x => x.id === PROJECT_ID);
+      if(p) return p;
+    }
+  }catch(e){}
+  return FALLBACK;
+}
+
+function getAllProjects(){
+  try{
+    const raw = localStorage.getItem('zi_projects');
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return [
+    {id:'lumina',title:'Luxury Skincare Rebrand',thumb:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=250&fit=crop'},
+    {id:'vella',title:'SaaS Dashboard Design',thumb:'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=400&h=250&fit=crop'},
+    {id:'axon',title:'Full-Stack Product Build',thumb:'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=250&fit=crop'},
+    {id:'koko',title:'Retail Identity System',thumb:'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=250&fit=crop'},
+    {id:'reeva',title:'Campaign & Motion Direction',thumb:'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&h=250&fit=crop'},
+    {id:'meridian',title:'Global Brand Strategy',thumb:'https://images.unsplash.com/photo-1542744173-05336fcc7ad4?w=400&h=250&fit=crop'},
+  ];
+}
+
+/* ─────────────────────────────────────────────────────
+   POPULATE
+───────────────────────────────────────────────────── */
+function populate(){
+  const p = getProject();
+  const all = getAllProjects();
+
+  document.getElementById('page-title').textContent = (p.title || 'Project') + ' — Zoar Imaginarium';
+  document.getElementById('page-desc').setAttribute('content', p.desc || '');
+
+  // Hero
+  const img = document.getElementById('wh-img');
+  img.src = p.thumb || ''; img.alt = p.title || '';
+  document.getElementById('wh-cat').textContent   = p.category || '';
+  document.getElementById('wh-title').textContent  = p.title    || '';
+  document.getElementById('wh-tagline').textContent = p.desc    || '';
+
+  // Meta strip
+  document.getElementById('meta-client').textContent   = p.client   || '—';
+  document.getElementById('meta-scope').textContent    = p.category || '—';
+  document.getElementById('meta-industry').textContent = p.industry  || '—';
+  document.getElementById('meta-year').textContent     = p.year      || '—';
+
+  // Story
+  document.getElementById('story-writeup').textContent = p.writeup || '';
+
+  // Gallery
+  buildGallery(p);
+
+  // Process
+  buildProcess(p);
+
+  // Next project
+  buildNext(p, all);
+}
+
+function buildGallery(p){
+  const section = document.getElementById('gallery-section');
+  const inner   = document.getElementById('gallery-inner');
+  const imgs = (p.gallery && p.gallery.length) ? p.gallery : (p.thumb ? [p.thumb] : []);
+  if(!imgs.length){ section.style.display = 'none'; return; }
+
+  let html = `<div class="wgallery__hero-wrap fu"><img src="${imgs[0]}" alt="${p.title || ''}" loading="lazy"/></div>`;
+  if(imgs.length > 1){
+    html += '<div class="wgallery__grid">';
+    for(let i = 1; i < imgs.length; i++){
+      html += `<div class="wgallery__grid-item fu"><img src="${imgs[i]}" alt="${p.title || ''} ${i+1}" loading="lazy"/></div>`;
+    }
+    html += '</div>';
+  }
+  inner.innerHTML = html;
+  inner.querySelectorAll('.fu').forEach(el => io.observe(el));
+}
+
+function buildProcess(p){
+  const section    = document.getElementById('process-section');
+  const container  = document.getElementById('process-steps');
+  if(!p.steps || !p.steps.length){ section.style.display = 'none'; return; }
+  container.innerHTML = p.steps.map((s, i) => `
+    <div class="wprocess__step fu">
+      <span class="wprocess__num">0${i+1}</span>
+      <span class="wprocess__text">${s}</span>
+    </div>`).join('');
+  container.querySelectorAll('.fu').forEach(el => io.observe(el));
+}
+
+function buildNext(p, all){
+  const idx  = all.findIndex(x => x.id === p.id);
+  const next = all[(idx + 1) % all.length];
+  if(!next || next.id === p.id){ document.querySelector('.wnext').style.display = 'none'; return; }
+  document.getElementById('wnext-link').href         = next.id + '.html';
+  document.getElementById('wnext-title').textContent = next.title || next.client || next.id;
+  const t = document.getElementById('wnext-thumb');
+  t.src = next.thumb || ''; t.alt = next.title || '';
+}
+
+/* ─────────────────────────────────────────────────────
+   INTERSECTION OBSERVER — fade-up
+───────────────────────────────────────────────────── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.06, rootMargin: '0px 0px -28px 0px' });
+
+document.querySelectorAll('.fu').forEach(el => io.observe(el));
+
+/* ─────────────────────────────────────────────────────
+   GSAP — hero image parallax
+───────────────────────────────────────────────────── */
+gsap.registerPlugin(ScrollTrigger);
+gsap.to('.wh__bg img', {
+  y: 100, ease: 'none',
+  scrollTrigger:{ trigger:'.wh', start:'top top', end:'bottom top', scrub:true }
+});
+
+/* ─────────────────────────────────────────────────────
+   MENU TOGGLE
+───────────────────────────────────────────────────── */
+const menuBtn = document.getElementById('menuBtn');
+const overlay = document.getElementById('overlay');
+let menuOpen  = false;
+
+menuBtn.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  overlay.classList.toggle('open', menuOpen);
+  menuBtn.textContent = menuOpen ? 'CLOSE' : 'MENU';
+});
+overlay.querySelectorAll('.overlay__link').forEach(l => l.addEventListener('click', () => {
+  menuOpen = false; overlay.classList.remove('open'); menuBtn.textContent = 'MENU';
+}));
+
+/* ─────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────── */
+populate();
+</script>
+</body>
+</html>
