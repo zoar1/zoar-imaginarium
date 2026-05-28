@@ -59,7 +59,7 @@
       transform-origin:center center;
       will-change:transform,opacity;
     }
-    .footer{position:relative;z-index:8;background:var(--bg)}
+    /* footer is fixed z-index:0, defined in footer section below */
 
     /* ── NAV ─────────────────────────────────── */
     .nav{
@@ -110,21 +110,27 @@
     /* ── HERO ────────────────────────────────── */
     .hero{
       min-height:100vh;
-      display:grid;grid-template-columns:1fr 1fr;
+      display:flex;flex-direction:column;
+      justify-content:flex-end;
+      padding:0;
       overflow:hidden;
     }
+    .hero__bg{
+      position:absolute;inset:0;z-index:0;
+    }
+    .hero__bg img{
+      width:100%;height:100%;object-fit:cover;display:block;
+    }
+    .hero__bg::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to top,rgba(8,8,8,.88) 0%,rgba(8,8,8,.55) 55%,rgba(8,8,8,.25) 100%);
+    }
     .hero__left{
+      position:relative;z-index:1;
       display:flex;flex-direction:column;
-      justify-content:center;
-      padding:140px 64px 80px;
       gap:36px;
-    }
-    .hero__right{
-      position:relative;overflow:hidden;
-    }
-    .hero__right img{
-      width:100%;height:100%;object-fit:cover;
-      display:block;
+      padding:0 80px 80px;
+      max-width:780px;
     }
     .hero__badge{
       display:inline-flex;align-items:center;gap:9px;
@@ -203,7 +209,7 @@
     .logos__dot{width:4px;height:4px;border-radius:50%;background:var(--faint)}
 
     /* ── EDITORIAL ───────────────────────────── */
-    .editorial{max-width:1400px;margin:0 auto;padding:120px 64px 72px}
+    .editorial{padding:120px 80px 72px}
     .eyebrow{
       display:flex;align-items:center;gap:10px;
       font-size:11px;font-weight:500;letter-spacing:.12em;
@@ -222,7 +228,7 @@
     .hi{color:var(--accent)}
 
     /* ── WORKS GRID ──────────────────────────── */
-    .works{max-width:1400px;margin:0 auto;padding:56px 64px 120px}
+    .works{padding:56px 80px 120px}
     .works__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
     .wcard{background:var(--bg-card);overflow:hidden;cursor:pointer;transition:background .25s}
     .wcard:hover{background:var(--bg-lift)}
@@ -252,7 +258,7 @@
     .wcard__year{font-size:11px;color:var(--subtle)}
 
     /* ── BENTO ───────────────────────────────── */
-    .features{max-width:1400px;margin:0 auto;padding:0 64px 120px}
+    .features{padding:0 80px 120px}
     .features__hl{
       font-size:clamp(24px,3.2vw,50px);
       font-weight:300;line-height:1.24;
@@ -309,8 +315,7 @@
 
     /* ── ABOUT ───────────────────────────────── */
     .about{
-      max-width:1400px;margin:0 auto;
-      padding:120px 64px;
+      padding:120px 80px;
       border-top:1px solid var(--hairline);
     }
     .about__grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
@@ -334,8 +339,7 @@
 
     /* ── CTA STRIP ───────────────────────────── */
     .cta-strip{
-      max-width:1400px;margin:0 auto;
-      padding:80px 64px;
+      padding:80px 80px;
       border-top:1px solid var(--hairline);
     }
     .cta-strip__text{
@@ -346,53 +350,67 @@
     .cta-strip__text a{color:var(--white);transition:color .2s}
     .cta-strip__text a:hover{color:var(--accent)}
 
-    /* ── FOOTER (brand reveal) ───────────────── */
+    /* ── FOOTER (fixed reveal behind content) ── */
     .footer{
-      min-height:100vh;
+      position:fixed;bottom:0;left:0;right:0;
+      height:50vh;z-index:0;
+      background:#1b1b1b;
       display:flex;flex-direction:column;
-      justify-content:space-between;
-      padding:80px 64px 56px;
-      background:var(--accent);
+      justify-content:center;
       overflow:hidden;
+      padding:0 0 48px;
     }
-    .footer__reveal{
-      flex:1;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      gap:16px;text-align:center;
-      padding:40px 0;
+    .footer__ticker{
+      width:100%;overflow:hidden;
+      white-space:nowrap;
     }
-    .footer__name{
-      font-size:clamp(52px,10vw,156px);
-      font-weight:800;line-height:.95;
-      letter-spacing:-.05em;color:var(--white);
+    .footer__ticker-runner{
+      display:inline-flex;align-items:center;
+      animation:footer-roll 18s linear infinite;
     }
-    .footer__tagline{
-      font-size:14px;letter-spacing:.14em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.55);
-      font-weight:400;
+    @keyframes footer-roll{
+      0%{transform:translateX(0)}
+      100%{transform:translateX(-50%)}
+    }
+    .footer__ticker-item{
+      font-size:clamp(52px,8vw,128px);
+      font-weight:900;letter-spacing:-.03em;
+      text-transform:uppercase;color:var(--white);
+      white-space:nowrap;padding:0 72px;
+      line-height:1;
+    }
+    .footer__ticker-sep{
+      font-size:clamp(20px,3vw,48px);
+      color:rgba(255,255,255,.25);
+      white-space:nowrap;flex-shrink:0;
+      font-weight:300;
     }
     .footer__bottom{
       display:flex;justify-content:space-between;align-items:center;
-      padding-top:28px;border-top:1px solid rgba(255,255,255,.18);
-      flex-wrap:wrap;gap:16px;
+      padding:28px 48px 0;
+      border-top:1px solid rgba(255,255,255,.08);
+      flex-wrap:wrap;gap:12px;
+      margin-top:auto;
     }
     .footer__copy{
-      font-size:11px;color:rgba(255,255,255,.5);
+      font-size:11px;color:rgba(255,255,255,.35);
       letter-spacing:.04em;
     }
     .footer__nav{display:flex;gap:24px;flex-wrap:wrap}
     .footer__nav a{
       font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-      color:rgba(255,255,255,.55);transition:color .2s;
+      color:rgba(255,255,255,.4);transition:color .2s;
     }
     .footer__nav a:hover{color:var(--white)}
     .footer__soc{display:flex;gap:20px}
     .footer__soc a{
       font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-      color:rgba(255,255,255,.55);transition:color .2s;
+      color:rgba(255,255,255,.4);transition:color .2s;
     }
     .footer__soc a:hover{color:var(--white)}
+
+    /* ── FOOTER SPACER (scroll room to reveal footer) */
+    .footer-spacer{height:50vh;position:relative;z-index:1;background:transparent}
 
     /* ── SCROLL ANIMATION ────────────────────── */
     .fu{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
@@ -405,17 +423,14 @@
       .about__grid{grid-template-columns:1fr;gap:48px}
     }
     @media(max-width:900px){
-      .hero{grid-template-columns:1fr}
-      .hero__right{display:none}
-      .hero__left{padding:120px 40px 72px;gap:28px}
+      .hero__left{padding:0 40px 64px;max-width:100%}
     }
     @media(max-width:768px){
       .nav{padding:20px 24px}
-      .hero__left{padding:110px 24px 64px}
+      .hero__left{padding:0 24px 52px}
       .editorial,.works,.features,.about,.cta-strip{padding-left:24px;padding-right:24px}
-      .footer{padding:60px 24px 40px}
-      .footer__name{letter-spacing:-.04em}
-      .footer__bottom{flex-direction:column;align-items:flex-start}
+      .footer__ticker-item{padding:0 36px}
+      .footer__bottom{flex-direction:column;align-items:flex-start;padding:20px 24px 0}
       .bento,.works__grid{grid-template-columns:1fr}
       .overlay{padding:96px 28px 48px}
     }
@@ -449,6 +464,13 @@
 
 <!-- HERO -->
 <section class="hero">
+
+  <!-- Full-bleed background image with dark overlay -->
+  <div class="hero__bg" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=1800&q=80" alt="" />
+  </div>
+
+  <!-- Text content overlaid on image -->
   <div class="hero__left">
     <div class="hero__badge">
       <span class="hero__badge-dot"></span>
@@ -480,9 +502,6 @@
     </div>
   </div>
 
-  <div class="hero__right">
-    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=900&q=85" alt="Creative direction" />
-  </div>
 </section>
 
 <!-- LOGOS -->
@@ -714,11 +733,22 @@
   </p>
 </section>
 
-<!-- FOOTER — Brand Reveal -->
+<!-- FOOTER SPACER — scroll room to reveal fixed footer below -->
+<div class="footer-spacer"></div>
+
+<!-- FOOTER — Fixed behind content, revealed on scroll -->
 <footer class="footer">
-  <div class="footer__reveal">
-    <h2 class="footer__name">Zoar<br>Imaginarium</h2>
-    <p class="footer__tagline">Creative Studio · Est. 2020 · Lagos, Nigeria</p>
+  <div class="footer__ticker">
+    <div class="footer__ticker-runner">
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+      <span class="footer__ticker-item">ZOAR IMAGINARIUM</span>
+      <span class="footer__ticker-sep">&nbsp;·&nbsp;</span>
+    </div>
   </div>
   <div class="footer__bottom">
     <p class="footer__copy">© 2026 Zoar Imaginarium. All rights reserved.</p>
